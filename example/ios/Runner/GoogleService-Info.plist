@@ -9,7 +9,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.example</string>
+	<string>com.fluttercreditcardscanner.example</string>
 	<key>PROJECT_ID</key>
 	<string>project-one-06</string>
 	<key>STORAGE_BUCKET</key>
@@ -25,7 +25,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:827856715814:ios:29cdb8bf0135dd543d26e7</string>
+	<string>1:827856715814:ios:414b8c7b28d7c7ae3d26e7</string>
 	<key>DATABASE_URL</key>
 	<string>https://project-one-06.firebaseio.com</string>
 </dict>

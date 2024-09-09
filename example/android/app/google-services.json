@@ -182,6 +182,35 @@
     },
     {
       "client_info": {
+        "mobilesdk_app_id": "1:827856715814:android:8ef8296b087ea68c3d26e7",
+        "android_client_info": {
+          "package_name": "com.flutter_credit_card_scanner.example"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "827856715814-cltjluh90oaquireaa5nq56tibc9f79b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKpW5xlTW39YRdh2Ch9acksWMtG3WdGko"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "827856715814-cltjluh90oaquireaa5nq56tibc9f79b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:827856715814:android:c31cac6099e20a943d26e7",
         "android_client_info": {
           "package_name": "com.myproject.sqlite"

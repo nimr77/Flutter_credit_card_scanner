@@ -2,8 +2,9 @@ import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_credit_card_scanner/credit_card.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
+
+import 'credit_card.dart';
 
 class CameraScannerWidgetCamera extends StatefulWidget {
   /// Callback function called when a credit card is successfully scanned.

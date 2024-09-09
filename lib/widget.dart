@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:camera/camera.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_credit_card_scanner/credit_card.dart';
@@ -12,12 +15,19 @@ class CameraScannerWidgetCamera extends StatefulWidget {
   final void Function() onNoCamera;
 
   final double? aspectRatio;
+
+  final bool cardNumber;
+  final bool cardHolder;
+  final bool cardExpiryDate;
   const CameraScannerWidgetCamera(
       {super.key,
       required this.onScan,
       required this.loadingHolder,
       required this.onNoCamera,
-      this.aspectRatio});
+      this.aspectRatio,
+      this.cardNumber = true,
+      this.cardHolder = true,
+      this.cardExpiryDate = true});
 
   @override
   State<CameraScannerWidgetCamera> createState() =>
@@ -90,6 +100,7 @@ class _CameraScannerWidgetCameraState extends State<CameraScannerWidgetCamera>
 
     // check the blocks to see if they are a number, name, or expiration and which block is which (if any)
     for (TextBlock block in readText.blocks) {
+      if (kDebugMode) log('block.text: ${block.text}');
       if (block.text.contains(RegExp(r'\/')) &&
           block.text.length > 4 &&
           block.text.length < 10) {
@@ -163,10 +174,10 @@ class _CameraScannerWidgetCameraState extends State<CameraScannerWidgetCamera>
       }
     }
 
-    if (cardNumber.isNotEmpty &&
-        cardName.isNotEmpty &&
-        cardExpirationYear.isNotEmpty &&
-        cardExpirationMonth.isNotEmpty) {
+    if ((cardNumber.isNotEmpty || !widget.cardNumber) &&
+        (cardName.isNotEmpty || !widget.cardHolder) &&
+        ((cardExpirationYear.isNotEmpty && cardExpirationMonth.isNotEmpty) ||
+            !widget.cardExpiryDate)) {
       widget.onScan(
           context,
           CreditCardModel(

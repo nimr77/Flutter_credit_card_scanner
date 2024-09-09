@@ -1,4 +1,4 @@
-package com.example.flutter_credit_card_scanner_example
+package com.example.example
 
 import io.flutter.embedding.android.FlutterActivity
 

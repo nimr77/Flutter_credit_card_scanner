@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -100,7 +98,7 @@ class _CameraScannerWidgetCameraState extends State<CameraScannerWidgetCamera>
 
     // check the blocks to see if they are a number, name, or expiration and which block is which (if any)
     for (TextBlock block in readText.blocks) {
-      if (kDebugMode) log('block.text: ${block.text}');
+      // if (kDebugMode) log('block.text: ${block.text}');
       if (block.text.contains(RegExp(r'\/')) &&
           block.text.length > 4 &&
           block.text.length < 10) {

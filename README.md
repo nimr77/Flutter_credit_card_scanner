@@ -16,7 +16,9 @@ CameraScannerWidgetCamera (
 ```
 
 **Demo:**
-<video src="https://user-images.githubusercontent.com/aaa.mp4](https://firebasestorage.googleapis.com/v0/b/project-one-06.appspot.com/o/WhatsApp%20Video%202024-09-09%20at%204.27.27%20PM.mp4?alt=media&token=e857f996-bca0-40f9-a57e-3f345e6f271e"></video>
+Camera scanning video record
+
+https://firebasestorage.googleapis.com/v0/b/project-one-06.appspot.com/o/WhatsApp%20Video%202024-09-09%20at%204.27.27%20PM.mp4?alt=media&token=e857f996-bca0-40f9-a57e-3f345e6f271e
 
 
 

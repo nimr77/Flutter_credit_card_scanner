@@ -19,7 +19,7 @@ CameraScannerWidgetCamera (
 Camera scanning video record
 
 
-[RECORD]https://github.com/user-attachments/assets/ff6e818c-a65c-4bff-bb95-cbaef2368a23
+https://github.com/user-attachments/assets/ff6e818c-a65c-4bff-bb95-cbaef2368a23
 
 
 

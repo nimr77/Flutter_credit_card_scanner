@@ -17,7 +17,7 @@ CameraScannerWidgetCamera (
 
 **Demo:**
 
-![CameraScannerWidgetCamera][cameraScannerWidgetCameraUrl]
+[cameraScannerWidgetCameraUrl]
 
 
 **Input Parameters:**

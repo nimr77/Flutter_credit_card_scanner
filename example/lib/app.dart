@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_credit_card_scanner/credit_card.dart';
 import 'package:flutter_credit_card_scanner/credit_card_scanner.dart';
 
 class MyAppCreditCardScanner extends StatefulWidget {

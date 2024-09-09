@@ -6,26 +6,40 @@ import 'package:flutter_credit_card_scanner/credit_card.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 
 class CameraScannerWidgetCamera extends StatefulWidget {
+  /// Callback function called when a credit card is successfully scanned.
   final void Function(BuildContext, CreditCardModel?) onScan;
 
+  /// Widget to display while the camera is initializing.
   final Widget loadingHolder;
 
+  /// Callback function called when no camera is available on the device.
   final void Function() onNoCamera;
 
+  /// Aspect ratio for the camera preview. If null, uses the device's screen aspect ratio.
   final double? aspectRatio;
 
+  /// Whether to scan for the card number. Defaults to true.
   final bool cardNumber;
+
+  /// Whether to scan for the card holder's name. Defaults to true.
   final bool cardHolder;
+
+  /// Whether to scan for the card's expiry date. Defaults to true.
   final bool cardExpiryDate;
-  const CameraScannerWidgetCamera(
-      {super.key,
-      required this.onScan,
-      required this.loadingHolder,
-      required this.onNoCamera,
-      this.aspectRatio,
-      this.cardNumber = true,
-      this.cardHolder = true,
-      this.cardExpiryDate = true});
+
+  /// Creates a [CameraScannerWidgetCamera].
+  ///
+  /// The [onScan], [loadingHolder], and [onNoCamera] parameters are required.
+  const CameraScannerWidgetCamera({
+    super.key,
+    required this.onScan,
+    required this.loadingHolder,
+    required this.onNoCamera,
+    this.aspectRatio,
+    this.cardNumber = true,
+    this.cardHolder = true,
+    this.cardExpiryDate = true,
+  });
 
   @override
   State<CameraScannerWidgetCamera> createState() =>
@@ -34,25 +48,35 @@ class CameraScannerWidgetCamera extends StatefulWidget {
 
 class _CameraScannerWidgetCameraState extends State<CameraScannerWidgetCamera>
     with WidgetsBindingObserver {
+  /// The camera controller used to manage the device's camera.
   static CameraController? controller;
+
+  /// Text recognizer used to process images and extract text.
   final textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
+
+  /// Notifier to manage the loading state of the camera.
   final valueLoading = ValueNotifier<bool>(true);
 
+  /// Flag to prevent multiple simultaneous scans.
   bool scanning = false;
+
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-        valueListenable: valueLoading,
-        builder: (context, isLoading, _) {
-          return AnimatedSwitcher(
-              duration: const Duration(milliseconds: 300),
-              child: isLoading
-                  ? widget.loadingHolder
-                  : AspectRatio(
-                      aspectRatio: widget.aspectRatio ??
-                          MediaQuery.of(context).size.aspectRatio,
-                      child: CameraPreview(controller!)));
-        });
+      valueListenable: valueLoading,
+      builder: (context, isLoading, _) {
+        return AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          child: isLoading
+              ? widget.loadingHolder
+              : AspectRatio(
+                  aspectRatio: widget.aspectRatio ??
+                      MediaQuery.of(context).size.aspectRatio,
+                  child: CameraPreview(controller!),
+                ),
+        );
+      },
+    );
   }
 
   @override
@@ -75,9 +99,6 @@ class _CameraScannerWidgetCameraState extends State<CameraScannerWidgetCamera>
     availableCameras().then((v) async {
       if (v.isEmpty) {
         if (mounted) {
-          // await showOkAlertDialog(context: context, message: S.current.error);
-          // if (mounted) context.pop();
-
           widget.onNoCamera();
         }
         return;
@@ -90,15 +111,19 @@ class _CameraScannerWidgetCameraState extends State<CameraScannerWidgetCamera>
     });
   }
 
-  onScanText(RecognizedText readText) {
+  /// Processes the recognized text to extract credit card information.
+  ///
+  /// This method analyzes the [RecognizedText] to identify the card number,
+  /// cardholder's name, and expiration date.
+  void onScanText(RecognizedText readText) {
     String cardNumber = '';
     String cardName = '';
     String cardExpirationMonth = '';
     String cardExpirationYear = '';
 
-    // check the blocks to see if they are a number, name, or expiration and which block is which (if any)
+    // Process each text block to identify card information
     for (TextBlock block in readText.blocks) {
-      // if (kDebugMode) log('block.text: ${block.text}');
+      // Check for expiration date
       if (block.text.contains(RegExp(r'\/')) &&
           block.text.length > 4 &&
           block.text.length < 10) {
@@ -114,7 +139,6 @@ class _CameraScannerWidgetCameraState extends State<CameraScannerWidgetCamera>
 
           if (cardExpirationYear.length == 2 &&
               cardExpirationYear.length == 2) {
-            // both should be numbers
             if (int.tryParse(cardExpirationYear) != null &&
                 int.tryParse(cardExpirationYear) != null) {
               continue;
@@ -123,9 +147,9 @@ class _CameraScannerWidgetCameraState extends State<CameraScannerWidgetCamera>
         }
       }
 
+      // Check for card number
       if (block.text.contains(RegExp(r'[0-9]')) && block.text.length > 10) {
         final text = block.text;
-        // if only numbers, then it's a card number and its ok to have spaces
         if (text.contains(' ') &&
             int.tryParse(text.replaceAll(" ", "")) != null &&
             text.split(" ").length == 4 &&
@@ -134,9 +158,10 @@ class _CameraScannerWidgetCameraState extends State<CameraScannerWidgetCamera>
           continue;
         }
       }
+
+      // Check for cardholder's name
       if (block.text.contains(RegExp(r'[a-zA-Z]')) &&
           block.text.contains(' ')) {
-        // must not be number and must have a space
         final hasNumber = block.text.contains(RegExp(r'[0-9]'));
 
         if (block.text.contains('\n') && hasNumber) {
@@ -154,12 +179,10 @@ class _CameraScannerWidgetCameraState extends State<CameraScannerWidgetCamera>
         if (hasNumber) {
           continue;
         }
-        // must not containe end of line
         final hasEndOfLine = block.text.contains(RegExp(r'\n'));
         if (hasEndOfLine) {
           final lines = block.text.split('\n');
 
-          // get the first with a space
           if (lines.isNotEmpty &&
               lines.any((element) => element.contains(' '))) {
             cardName = lines.firstWhere((element) => element.contains(' '));
@@ -167,27 +190,32 @@ class _CameraScannerWidgetCameraState extends State<CameraScannerWidgetCamera>
           }
         }
         cardName = block.text;
-
-        continue;
       }
     }
 
+    // Call onScan callback if required information is found
     if ((cardNumber.isNotEmpty || !widget.cardNumber) &&
         (cardName.isNotEmpty || !widget.cardHolder) &&
         ((cardExpirationYear.isNotEmpty && cardExpirationMonth.isNotEmpty) ||
             !widget.cardExpiryDate)) {
       widget.onScan(
-          context,
-          CreditCardModel(
-              number: cardNumber,
-              expirationMonth: cardExpirationMonth,
-              expirationYear: cardExpirationYear,
-              // cvv: "",
-              holderName: cardName));
+        context,
+        CreditCardModel(
+          number: cardNumber,
+          expirationMonth: cardExpirationMonth,
+          expirationYear: cardExpirationYear,
+          holderName: cardName,
+        ),
+      );
     }
   }
 
-  _initializeCameraController(CameraDescription description) async {
+  /// Initializes the camera controller and starts the image stream.
+  ///
+  /// This method sets up the camera with the given [description],
+  /// initializes the controller, and begins processing images for text recognition.
+  Future<void> _initializeCameraController(
+      CameraDescription description) async {
     final CameraController cameraController = CameraController(
       description,
       ResolutionPreset.max,

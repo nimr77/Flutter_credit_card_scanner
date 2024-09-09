@@ -33,40 +33,18 @@ class _CameraScannerWidgetCameraState extends State<CameraScannerWidgetCamera>
   bool scanning = false;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: ValueListenableBuilder(
-          valueListenable: valueLoading,
-          builder: (context, isLoading, _) {
-            return Stack(
-              children: [
-                AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    child: isLoading
-                        ? widget.loadingHolder
-                        : AspectRatio(
-                            aspectRatio: widget.aspectRatio ??
-                                MediaQuery.of(context).size.aspectRatio,
-                            child: CameraPreview(controller!))),
-
-                // close button
-                // Align(
-                //     alignment: Alignment.topLeft,
-                //     child: SafeArea(
-                //       child: IconButton(
-                //           icon: const Icon(
-                //             Icons.close,
-                //           ),
-                //           onPressed: () {
-                //             if (controller != null) {
-                //               controller!.dispose();
-                //             }
-                //             context.pop();
-                //           }),
-                //     ))
-              ],
-            );
-          }),
-    );
+    return ValueListenableBuilder(
+        valueListenable: valueLoading,
+        builder: (context, isLoading, _) {
+          return AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              child: isLoading
+                  ? widget.loadingHolder
+                  : AspectRatio(
+                      aspectRatio: widget.aspectRatio ??
+                          MediaQuery.of(context).size.aspectRatio,
+                      child: CameraPreview(controller!)));
+        });
   }
 
   @override
@@ -149,6 +127,36 @@ class _CameraScannerWidgetCameraState extends State<CameraScannerWidgetCamera>
       }
       if (block.text.contains(RegExp(r'[a-zA-Z]')) &&
           block.text.contains(' ')) {
+        // must not be number and must have a space
+        final hasNumber = block.text.contains(RegExp(r'[0-9]'));
+
+        if (block.text.contains('\n') && hasNumber) {
+          final lines = block.text.split('\n');
+
+          if (lines.isNotEmpty &&
+              lines.any((element) =>
+                  element.contains(' ') &&
+                  !element.contains(RegExp(r'[0-9]')))) {
+            cardName = lines.firstWhere((element) =>
+                element.contains(' ') && !element.contains(RegExp(r'[0-9]')));
+            continue;
+          }
+        }
+        if (hasNumber) {
+          continue;
+        }
+        // must not containe end of line
+        final hasEndOfLine = block.text.contains(RegExp(r'\n'));
+        if (hasEndOfLine) {
+          final lines = block.text.split('\n');
+
+          // get the first with a space
+          if (lines.isNotEmpty &&
+              lines.any((element) => element.contains(' '))) {
+            cardName = lines.firstWhere((element) => element.contains(' '));
+            continue;
+          }
+        }
         cardName = block.text;
 
         continue;
@@ -173,7 +181,7 @@ class _CameraScannerWidgetCameraState extends State<CameraScannerWidgetCamera>
   _initializeCameraController(CameraDescription description) async {
     final CameraController cameraController = CameraController(
       description,
-      ResolutionPreset.medium,
+      ResolutionPreset.max,
       enableAudio: false,
       imageFormatGroup: ImageFormatGroup.yuv420,
     );

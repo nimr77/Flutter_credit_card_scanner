@@ -3,7 +3,7 @@ import UIKit
 import XCTest
 
 
-@testable import credit_card_scanner
+@testable import flutter_credit_card_scanner
 
 // This demonstrates a simple unit test of the Swift portion of this plugin's implementation.
 //

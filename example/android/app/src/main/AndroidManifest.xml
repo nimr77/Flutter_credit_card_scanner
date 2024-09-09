@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="credit_card_scanner_example"
+        android:label="flutter_credit_card_scanner_example"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

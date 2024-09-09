@@ -1,4 +1,4 @@
-package com.example.credit_card_scanner
+package com.example.flutter_credit_card_scanner
 
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel

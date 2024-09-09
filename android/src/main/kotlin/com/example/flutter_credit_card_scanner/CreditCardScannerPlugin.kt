@@ -1,4 +1,4 @@
-package com.example.credit_card_scanner
+package com.example.flutter_credit_card_scanner
 
 import androidx.annotation.NonNull
 
@@ -17,7 +17,7 @@ class CreditCardScannerPlugin: FlutterPlugin, MethodCallHandler {
   private lateinit var channel : MethodChannel
 
   override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-    channel = MethodChannel(flutterPluginBinding.binaryMessenger, "credit_card_scanner")
+    channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutter_credit_card_scanner")
     channel.setMethodCallHandler(this)
   }
 

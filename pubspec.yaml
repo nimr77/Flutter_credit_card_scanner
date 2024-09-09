@@ -1,4 +1,4 @@
-name: credit_card_scanner
+name: flutter_credit_card_scanner
 description: "A Flutter package that utilizes the device camera to scan and extract credit card information, providing a seamless and efficient way to capture card details in mobile applications."
 version: 0.0.1
 # homepage:
@@ -35,7 +35,7 @@ flutter:
   plugin:
     platforms:
       android:
-        package: com.example.credit_card_scanner
+        package: com.example.flutter_credit_card_scanner
         pluginClass: CreditCardScannerPlugin
       ios:
         pluginClass: CreditCardScannerPlugin

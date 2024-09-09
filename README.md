@@ -26,7 +26,7 @@ CameraScannerWidgetCamera (
 **Example Usage:**
 
 ```dart
-import 'package:credit_card_scanner/credit_card_scanner.dart';
+import 'package:flutter_credit_card_scanner/flutter_credit_card_scanner.dart';
 import 'package:flutter/material.dart';
 
 class MyAppCreditCardScanner extends StatefulWidget {

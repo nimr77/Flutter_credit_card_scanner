@@ -1,7 +1,7 @@
 name: credit_card_scanner
-description: "A new Flutter plugin project."
+description: "A Flutter package that utilizes the device camera to scan and extract credit card information, providing a seamless and efficient way to capture card details in mobile applications."
 version: 0.0.1
-homepage:
+# homepage:
 
 environment:
   sdk: ^3.5.1
@@ -12,12 +12,10 @@ dependencies:
   flutter:
     sdk: flutter
   google_mlkit_text_recognition: ^0.13.0
-  plugin_platform_interface: ^2.0.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

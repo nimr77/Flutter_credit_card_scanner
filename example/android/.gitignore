@@ -12,4 +12,4 @@ key.properties
 **/*.keystore
 **/*.jks
 
-/src/google-services.json
+src/google-services.json

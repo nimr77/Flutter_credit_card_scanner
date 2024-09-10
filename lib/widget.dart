@@ -6,7 +6,7 @@ import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart
 
 import 'credit_card.dart';
 
-class CameraScannerWidgetCamera extends StatefulWidget {
+class CameraScannerWidget extends StatefulWidget {
   /// Callback function called when a credit card is successfully scanned.
   final void Function(BuildContext, CreditCardModel?) onScan;
 
@@ -28,10 +28,10 @@ class CameraScannerWidgetCamera extends StatefulWidget {
   /// Whether to scan for the card's expiry date. Defaults to true.
   final bool cardExpiryDate;
 
-  /// Creates a [CameraScannerWidgetCamera].
+  /// Creates a [CameraScannerWidget].
   ///
   /// The [onScan], [loadingHolder], and [onNoCamera] parameters are required.
-  const CameraScannerWidgetCamera({
+  const CameraScannerWidget({
     super.key,
     required this.onScan,
     required this.loadingHolder,
@@ -43,11 +43,10 @@ class CameraScannerWidgetCamera extends StatefulWidget {
   });
 
   @override
-  State<CameraScannerWidgetCamera> createState() =>
-      _CameraScannerWidgetCameraState();
+  State<CameraScannerWidget> createState() => _CameraScannerWidgetState();
 }
 
-class _CameraScannerWidgetCameraState extends State<CameraScannerWidgetCamera>
+class _CameraScannerWidgetState extends State<CameraScannerWidget>
     with WidgetsBindingObserver {
   /// The camera controller used to manage the device's camera.
   static CameraController? controller;

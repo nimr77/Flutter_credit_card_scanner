@@ -1,11 +1,11 @@
-## CameraScannerWidgetCamera
+## CameraScannerWidget
 
 **Description:**
 
 This widget provides a camera preview that scans for credit card information using Google ML Kit Text Recognition. Once a credit card is detected in the frame, it extracts the card number, holder name, and expiration date. 
 
 ```dart
-CameraScannerWidgetCamera (
+CameraScannerWidget (
 
     onScan:(ctx,value){},
     loadingHolder: CircularProgressIndicator(),
@@ -50,7 +50,7 @@ class _MyAppCreditCardScannerState extends State<MyAppCreditCardScanner> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        CameraScannerWidgetCamera(
+        CameraScannerWidget(
           onNoCamera: () {
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                 content: Text('No camera found, please enable camera')));
@@ -101,7 +101,7 @@ class _MyAppCreditCardScannerState extends State<MyAppCreditCardScanner> {
 ```
 **Explanation:**
 
-* This code provides a clear and concise documentation for the `CameraScannerWidgetCamera` widget, including its purpose, input parameters, and an example usage.
+* This code provides a clear and concise documentation for the `CameraScannerWidget` widget, including its purpose, input parameters, and an example usage.
 * The code is formatted using Markdown syntax, which is commonly used for writing README files on GitHub.
 * The example demonstrates how to use the widget within a Flutter application to scan credit card information and display the extracted data.
 

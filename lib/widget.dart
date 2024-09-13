@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -108,6 +110,14 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
           (element) => element.lensDirection == CameraLensDirection.back);
 
       _initializeCameraController(c);
+    }).onError((error, stackTrace) {
+      if (kDebugMode) {
+        log(error.toString());
+        log(stackTrace.toString());
+      }
+      if (mounted) {
+        widget.onNoCamera();
+      }
     });
   }
 

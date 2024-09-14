@@ -77,9 +77,6 @@ platform :ios, '13.0'
 
 Run `pod install` in the `ios` directory.
 
-For both platforms, make sure to add the following dependencies to your `pubspec.yaml`:
-
-
 Note: If you encounter an error with iOS, please check the Google ML Kit configuration at this link: https://pub.dev/packages/google_ml_kit
 
 

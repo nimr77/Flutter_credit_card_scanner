@@ -30,6 +30,60 @@ https://github.com/user-attachments/assets/ff6e818c-a65c-4bff-bb95-cbaef2368a23
 * **`loadingHolder`** (required): A widget to display while the camera is initializing. 
 * **`onNoCamera`** (required): A callback function that is called if no camera is available on the device.
 * **`aspectRatio`** (optional): The aspect ratio of the camera preview. Defaults to the aspect ratio of the device screen.
+* **`cardNumber`** (optional): Whether to scan for the card number. Defaults to true.
+* **`cardHolder`** (optional): Whether to scan for the card holder's name. Defaults to true.
+* **`cardExpiryDate`** (optional): Whether to scan for the card's expiry date. Defaults to true.
+
+**Implementations for Android and iOS:**
+
+For Android:
+
+1. Change the minimum Android sdk version to 21 (or higher) in your android/app/build.gradle file:
+```gradle
+android {
+    defaultConfig {
+        minSdkVersion 21
+        // ... other configurations
+    }
+}
+```
+
+2. Update your `android/app/src/main/AndroidManifest.xml` file to include camera permissions:
+
+```xml
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.your_app_name">
+    
+    <uses-permission android:name="android.permission.CAMERA" />
+    
+</manifest>
+```
+
+For iOS:
+
+1. Update your `ios/Runner/Info.plist` file to include camera usage description:
+
+```plist
+<key>NSCameraUsageDescription</key>
+<string>This app needs access to the camera to scan credit cards.</string>
+```
+
+2. Add the following to your `ios/Podfile`:
+
+```Podfile
+platform :ios, '13.0'
+```
+
+
+Run `pod install` in the `ios` directory.
+
+For both platforms, make sure to add the following dependencies to your `pubspec.yaml`:
+
+
+Note: If you encounter an error with iOS, please check the Google ML Kit configuration at this link: https://pub.dev/packages/google_ml_kit
+
+
+After adding these configurations, you can use the `CameraScannerWidget` in your Flutter app as shown in the example usage. The widget will handle the camera preview and ML Kit text recognition to scan credit cards on both Android and iOS platforms.
 
 **Example Usage:**
 

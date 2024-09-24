@@ -1,3 +1,8 @@
+## 0.8.0
+
+### Changed
+- Updated the plugin to use the latest version of the Google ML Kit library
+
 ## 0.7.3
 
 ### Added

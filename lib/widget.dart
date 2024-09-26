@@ -35,6 +35,8 @@ class CameraScannerWidget extends StatefulWidget {
 
   final Color? colorOverlay;
 
+  final ShapeBorder? shapeBorder;
+
   /// Creates a [CameraScannerWidget].
   ///
   /// The [onScan], [loadingHolder], and [onNoCamera] parameters are required.
@@ -48,6 +50,7 @@ class CameraScannerWidget extends StatefulWidget {
     this.cardHolder = true,
     this.cardExpiryDate = true,
     this.colorOverlay,
+    this.shapeBorder,
   });
 
   @override
@@ -100,10 +103,11 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
 
                     Container(
                       decoration: ShapeDecoration(
-                        shape: OverlayShape(
-                            cutOutSize: 400,
-                            overlayColor: colorOverlay,
-                            borderRadius: 20),
+                        shape: widget.shapeBorder ??
+                            OverlayShape(
+                                cutOutSize: 400,
+                                overlayColor: colorOverlay,
+                                borderRadius: 20),
                       ),
                     ),
                   ],

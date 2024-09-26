@@ -148,7 +148,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.7.9"
+    version: "0.8.0"
   flutter_driver:
     dependency: transitive
     description: flutter
@@ -302,6 +302,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.0.2"
+  scanner_overlay:
+    dependency: transitive
+    description:
+      name: scanner_overlay
+      sha256: "4768f9a279d5749ee8fc871a334cf8ef64a13b66c6851b3af85a167063c7f402"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2"
   sky_engine:
     dependency: transitive
     description: flutter

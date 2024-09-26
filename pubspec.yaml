@@ -12,6 +12,7 @@ dependencies:
       flutter:
         sdk: flutter
       google_mlkit_text_recognition: ^0.13.1
+      scanner_overlay: ^0.0.2
 
 dev_dependencies:
       flutter_test:

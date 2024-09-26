@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
@@ -220,6 +222,43 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
     }
   }
 
+  void process(CameraImage image, CameraDescription description) async {
+    if (scanning) return;
+
+    scanning = true;
+
+    final InputImageRotation imageRotation =
+        InputImageRotationValue.fromRawValue(description.sensorOrientation) ??
+            InputImageRotation.rotation0deg;
+
+    final InputImage inputImage = InputImage.fromBytes(
+      bytes: Uint8List.fromList(
+        image.planes.fold(
+            <int>[],
+            (List<int> previousValue, element) =>
+                previousValue..addAll(element.bytes)),
+      ),
+      metadata: InputImageMetadata(
+        size: Size(image.width.toDouble(), image.height.toDouble()),
+        rotation: imageRotation,
+        format: Platform.isAndroid
+            ? InputImageFormat.nv21
+            : InputImageFormat.yuv420,
+        bytesPerRow: image.planes[0].bytesPerRow,
+      ),
+    );
+
+    final textR = await textRecognizer.processImage(inputImage);
+
+    if (textR.text.isNotEmpty) {
+      onScanText(textR);
+    }
+
+    Future.delayed(const Duration(milliseconds: 500), () {
+      scanning = false;
+    });
+  }
+
   /// Initializes the camera controller and starts the image stream.
   ///
   /// This method sets up the camera with the given [description],
@@ -228,9 +267,10 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
       CameraDescription description) async {
     final CameraController cameraController = CameraController(
       description,
-      ResolutionPreset.max,
+      ResolutionPreset.high,
       enableAudio: false,
-      imageFormatGroup: ImageFormatGroup.yuv420,
+      imageFormatGroup:
+          Platform.isAndroid ? ImageFormatGroup.nv21 : ImageFormatGroup.yuv420,
     );
 
     controller = cameraController;
@@ -238,39 +278,9 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
     await cameraController.initialize();
 
     valueLoading.value = false;
+
     await cameraController.startImageStream((CameraImage image) async {
-      if (scanning) return;
-      scanning = true;
-      if (image.format.group != ImageFormatGroup.yuv420) {
-        return;
-      }
-
-      final InputImageRotation imageRotation =
-          InputImageRotationValue.fromRawValue(description.sensorOrientation) ??
-              InputImageRotation.rotation0deg;
-
-      final InputImage inputImage = InputImage.fromBytes(
-        bytes: Uint8List.fromList(
-          image.planes.fold(
-              <int>[],
-              (List<int> previousValue, element) =>
-                  previousValue..addAll(element.bytes)),
-        ),
-        metadata: InputImageMetadata(
-          size: Size(image.width.toDouble(), image.height.toDouble()),
-          rotation: imageRotation,
-          format: InputImageFormat.yuv420,
-          bytesPerRow: image.planes[0].bytesPerRow,
-        ),
-      );
-
-      final textR = await textRecognizer.processImage(inputImage);
-
-      if (textR.text.isNotEmpty) {
-        onScanText(textR);
-      }
-
-      scanning = false;
+      process(image, description);
     });
   }
 }

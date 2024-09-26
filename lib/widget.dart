@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 
+import 'clipper.dart';
 import 'credit_card.dart';
 
 class CameraScannerWidget extends StatefulWidget {
@@ -32,6 +33,8 @@ class CameraScannerWidget extends StatefulWidget {
   /// Whether to scan for the card's expiry date. Defaults to true.
   final bool cardExpiryDate;
 
+  final Color? colorOverlay;
+
   /// Creates a [CameraScannerWidget].
   ///
   /// The [onScan], [loadingHolder], and [onNoCamera] parameters are required.
@@ -44,6 +47,7 @@ class CameraScannerWidget extends StatefulWidget {
     this.cardNumber = true,
     this.cardHolder = true,
     this.cardExpiryDate = true,
+    this.colorOverlay,
   });
 
   @override
@@ -53,7 +57,8 @@ class CameraScannerWidget extends StatefulWidget {
 class _CameraScannerWidgetState extends State<CameraScannerWidget>
     with WidgetsBindingObserver {
   /// The camera controller used to manage the device's camera.
-  static CameraController? controller;
+  CameraController? controller;
+  CameraController? controller2;
 
   /// Text recognizer used to process images and extract text.
   final textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
@@ -64,8 +69,13 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
   /// Flag to prevent multiple simultaneous scans.
   bool scanning = false;
 
+  Color get colorOverlay =>
+      widget.colorOverlay ?? Colors.black.withOpacity(0.8);
+
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return ValueListenableBuilder(
       valueListenable: valueLoading,
       builder: (context, isLoading, _) {
@@ -73,10 +83,30 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
           duration: const Duration(milliseconds: 300),
           child: isLoading
               ? widget.loadingHolder
-              : AspectRatio(
-                  aspectRatio: widget.aspectRatio ??
-                      MediaQuery.of(context).size.aspectRatio,
-                  child: CameraPreview(controller!),
+              : Stack(
+                  children: [
+                    // Camera
+                    // AspectRatio(
+                    //     aspectRatio: MediaQuery.of(context).size.aspectRatio,
+                    //     child: CameraPreview(controller!)),
+
+                    // Overlay
+                    Container(
+                      width: size.width,
+                      height: size.height,
+                      color: Colors.black,
+                    ),
+                    Center(child: CameraPreview(controller!)),
+
+                    Container(
+                      decoration: ShapeDecoration(
+                        shape: OverlayShape(
+                            cutOutSize: 400,
+                            overlayColor: colorOverlay,
+                            borderRadius: 20),
+                      ),
+                    ),
+                  ],
                 ),
         );
       },
@@ -231,13 +261,11 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
         InputImageRotationValue.fromRawValue(description.sensorOrientation) ??
             InputImageRotation.rotation0deg;
 
+    final List<int> bytes =
+        image.planes.expand((plane) => plane.bytes).toList();
+
     final InputImage inputImage = InputImage.fromBytes(
-      bytes: Uint8List.fromList(
-        image.planes.fold(
-            <int>[],
-            (List<int> previousValue, element) =>
-                previousValue..addAll(element.bytes)),
-      ),
+      bytes: Uint8List.fromList(bytes),
       metadata: InputImageMetadata(
         size: Size(image.width.toDouble(), image.height.toDouble()),
         rotation: imageRotation,

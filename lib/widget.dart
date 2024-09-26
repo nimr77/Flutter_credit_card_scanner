@@ -279,16 +279,19 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
         bytesPerRow: image.planes[0].bytesPerRow,
       ),
     );
+    try {
+      final textR = await textRecognizer.processImage(inputImage);
 
-    final textR = await textRecognizer.processImage(inputImage);
+      if (textR.text.isNotEmpty) {
+        onScanText(textR);
+      }
 
-    if (textR.text.isNotEmpty) {
-      onScanText(textR);
-    }
-
-    Future.delayed(const Duration(milliseconds: 500), () {
+      Future.delayed(const Duration(milliseconds: 500), () {
+        scanning = false;
+      });
+    } catch (e) {
       scanning = false;
-    });
+    }
   }
 
   /// Initializes the camera controller and starts the image stream.

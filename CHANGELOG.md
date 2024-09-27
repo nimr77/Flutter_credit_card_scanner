@@ -1,3 +1,10 @@
+## 0.9.0
+### Changed
+- Updated the plugin to use the latest version of the Google ML Kit library
+- Update the scanning UI to use the latest design guidelines
+
+
+
 ## 0.8.0
 
 ### Changed

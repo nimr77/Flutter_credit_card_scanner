@@ -184,9 +184,9 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
           }
 
           if (cardExpirationYear.length == 2 &&
-              cardExpirationYear.length == 2) {
+              cardExpirationMonth.length == 2) {
             if (int.tryParse(cardExpirationYear) != null &&
-                int.tryParse(cardExpirationYear) != null) {
+                int.tryParse(cardExpirationMonth) != null) {
               continue;
             }
           }

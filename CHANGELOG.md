@@ -2,6 +2,7 @@
 ### Changed
 - Updated the plugin to use the latest version of the Google ML Kit library
 - Update the scanning UI to use the latest design guidelines
+- Faster scanning speed
 
 
 

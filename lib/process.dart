@@ -137,6 +137,7 @@ class ProccessCreditCard {
           text.split(" ").every((element) => element.length == 4) &&
           text.length > 8) {
         cardNumber = text;
+        numberTextList.clear();
       }
       if (v.length == 4 && int.tryParse(v) != null) {
         numberTextList.add(v);

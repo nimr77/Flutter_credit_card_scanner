@@ -4,7 +4,7 @@
 
 Introducing a cutting-edge Flutter package that harnesses the power of your device's camera to seamlessly scan and extract credit card information. This innovative solution leverages state-of-the-art machine learning technologies: Google ML Kit for Android devices and Apple Vision for iOS, ensuring optimal performance across platforms.
 
-
+```dart
 CameraScannerWidget (
     onScan: (ctx, value) {},
     loadingHolder: CircularProgressIndicator(),
@@ -12,7 +12,7 @@ CameraScannerWidget (
         // Handle camera unavailability
     }
 )
-
+```
 
 **Demo:**
 Witness the magic in action! 🎥✨

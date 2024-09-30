@@ -10,6 +10,7 @@ import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart
 
 import 'clipper.dart';
 import 'credit_card.dart';
+import 'process.dart';
 
 class CameraScannerWidget extends StatefulWidget {
   /// Callback function called when a credit card is successfully scanned.
@@ -71,16 +72,13 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
   /// Flag to prevent multiple simultaneous scans.
   bool scanning = false;
 
-  String cardNumber = '';
-
-  String cardName = '';
-
-  String cardExpirationMonth = '';
-
-  String cardExpirationYear = '';
-
+  late final _process = ProccessCreditCard(
+      checkCreditCardNumber: widget.cardNumber,
+      checkCreditCardName: widget.cardHolder,
+      checkCreditCardExpiryDate: widget.cardHolder);
   Color get colorOverlay =>
       widget.colorOverlay ?? Colors.black.withOpacity(0.8);
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -169,92 +167,20 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
   /// This method analyzes the [RecognizedText] to identify the card number,
   /// cardholder's name, and expiration date.
   void onScanText(RecognizedText readText) {
-    // Process each text block to identify card information
+    // Call onScan callback if required information is found
+    CreditCardModel? creditCardModel;
     for (TextBlock block in readText.blocks) {
-      // Check for expiration date
-      if (block.text.contains(RegExp(r'\/')) &&
-          block.text.length > 4 &&
-          block.text.length < 10) {
-        final text = block.text;
+      for (TextLine line in block.lines) {
+        for (TextElement element in line.elements) {
+          final text = element.text;
 
-        if (text.contains('/')) {
-          cardExpirationMonth = text.split('/').first;
-          cardExpirationYear = text.split('/').last;
-
-          if (cardExpirationMonth.length == 1) {
-            cardExpirationMonth = '0$cardExpirationMonth';
-          }
-
-          if (cardExpirationYear.length == 2 &&
-              cardExpirationMonth.length == 2) {
-            if (int.tryParse(cardExpirationYear) != null &&
-                int.tryParse(cardExpirationMonth) != null) {
-              continue;
-            }
-          }
+          creditCardModel = _process.processString(text);
         }
-      }
-
-      // Check for card number
-      if (block.text.contains(RegExp(r'[0-9]')) && block.text.length > 8) {
-        final text = block.text;
-        if (text.contains(' ') &&
-            int.tryParse(text.replaceAll(" ", "")) != null &&
-            text.split(" ").length == 4 &&
-            text.split(" ").every((element) => element.length == 4)) {
-          cardNumber = text;
-          continue;
-        }
-      }
-
-      // Check for cardholder's name
-      if (block.text.contains(RegExp(r'[a-zA-Z]')) &&
-          block.text.contains(' ')) {
-        final hasNumber = block.text.contains(RegExp(r'[0-9]'));
-
-        if (block.text.contains('\n') && hasNumber) {
-          final lines = block.text.split('\n');
-
-          if (lines.isNotEmpty &&
-              lines.any((element) =>
-                  element.contains(' ') &&
-                  !element.contains(RegExp(r'[0-9]')))) {
-            cardName = lines.firstWhere((element) =>
-                element.contains(' ') && !element.contains(RegExp(r'[0-9]')));
-            continue;
-          }
-        }
-        if (hasNumber) {
-          continue;
-        }
-        final hasEndOfLine = block.text.contains(RegExp(r'\n'));
-        if (hasEndOfLine) {
-          final lines = block.text.split('\n');
-
-          if (lines.isNotEmpty &&
-              lines.any((element) => element.contains(' '))) {
-            cardName = lines.firstWhere((element) => element.contains(' '));
-            continue;
-          }
-        }
-        cardName = block.text;
       }
     }
 
-    // Call onScan callback if required information is found
-    if ((cardNumber.isNotEmpty || !widget.cardNumber) &&
-        (cardName.isNotEmpty || !widget.cardHolder) &&
-        ((cardExpirationYear.isNotEmpty && cardExpirationMonth.isNotEmpty) ||
-            !widget.cardExpiryDate)) {
-      widget.onScan(
-        context,
-        CreditCardModel(
-          number: cardNumber,
-          expirationMonth: cardExpirationMonth,
-          expirationYear: cardExpirationYear,
-          holderName: cardName,
-        ),
-      );
+    if (creditCardModel != null) {
+      widget.onScan(context, creditCardModel);
     }
   }
 

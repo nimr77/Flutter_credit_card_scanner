@@ -1,4 +1,7 @@
 PODS:
+  - apple_vision_recognize_text (0.0.4):
+    - Flutter
+    - FlutterMacOS
   - camera_avfoundation (0.0.1):
     - Flutter
   - Firebase/CoreOnly (10.18.0):
@@ -15,10 +18,10 @@ PODS:
   - Flutter (1.0.0)
   - flutter_credit_card_scanner (0.0.1):
     - Flutter
-  - google_mlkit_commons (0.7.1):
+  - google_mlkit_commons (0.8.1):
     - Flutter
     - MLKitVision
-  - google_mlkit_text_recognition (0.13.0):
+  - google_mlkit_text_recognition (0.13.1):
     - Flutter
     - google_mlkit_commons
     - GoogleMLKit/TextRecognition (~> 6.0.0)
@@ -82,6 +85,7 @@ PODS:
   - PromisesObjC (2.4.0)
 
 DEPENDENCIES:
+  - apple_vision_recognize_text (from `.symlinks/plugins/apple_vision_recognize_text/darwin`)
   - camera_avfoundation (from `.symlinks/plugins/camera_avfoundation/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - Flutter (from `Flutter`)
@@ -110,6 +114,8 @@ SPEC REPOS:
     - PromisesObjC
 
 EXTERNAL SOURCES:
+  apple_vision_recognize_text:
+    :path: ".symlinks/plugins/apple_vision_recognize_text/darwin"
   camera_avfoundation:
     :path: ".symlinks/plugins/camera_avfoundation/ios"
   firebase_core:
@@ -126,6 +132,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/integration_test/ios"
 
 SPEC CHECKSUMS:
+  apple_vision_recognize_text: 5ae4f8de25019a5e4aa208e9fb6a15624290307f
   camera_avfoundation: dd002b0330f4981e1bbcb46ae9b62829237459a4
   Firebase: 414ad272f8d02dfbf12662a9d43f4bba9bec2a06
   firebase_core: 0af4a2b24f62071f9bf283691c0ee41556dcb3f5
@@ -133,8 +140,8 @@ SPEC CHECKSUMS:
   FirebaseCoreInternal: df84dd300b561c27d5571684f389bf60b0a5c934
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_credit_card_scanner: f67b8aaf7bd95f2893848b3f7bffdfde41c05ea6
-  google_mlkit_commons: 96aaca445520311b84a2da013dedf3427fe4cc69
-  google_mlkit_text_recognition: 393c2526da49aa6c9c883e6d69100f54af011e24
+  google_mlkit_commons: 242b715c38863e1ca5e732c909a1545ba52f1375
+  google_mlkit_text_recognition: e36a265afba48580518dfc4532ce9fefaae7d20e
   GoogleDataTransport: 6c09b596d841063d76d4288cc2d2f42cc36e1e2a
   GoogleMLKit: 97ac7af399057e99182ee8edfa8249e3226a4065
   GoogleToolboxForMac: d1a2cbf009c453f4d6ded37c105e2f67a32206d8

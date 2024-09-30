@@ -1,3 +1,10 @@
+## 0.10.0
+
+
+### Added
+- Using apple vision text recognition for ios
+
+
 ## 0.9.0
 ### Changed
 - Updated the plugin to use the latest version of the Google ML Kit library

@@ -1,22 +1,38 @@
 import 'credit_card.dart';
 
+/// A class that processes strings to extract credit card information.
 class ProccessCreditCard {
+  /// The extracted credit card number.
   String cardNumber = '';
 
+  /// The extracted cardholder name.
   String cardName = '';
 
+  /// The extracted card expiration month.
   String cardExpirationMonth = '';
 
+  /// The extracted card expiration year.
   String cardExpirationYear = '';
 
+  /// Whether to check for a credit card number.
   bool checkCreditCardNumber;
+
+  /// Whether to check for a cardholder name.
   bool checkCreditCardName;
+
+  /// Whether to check for a credit card expiry date.
   bool checkCreditCardExpiryDate;
 
+  /// The extracted credit card information.
   CreditCardModel? creditCardModel;
 
+  /// A list of 4-digit number strings, used to assemble the card number.
   final numberTextList = <String>[];
 
+  /// Creates a new instance of [ProccessCreditCard].
+  ///
+  /// The [checkCreditCardNumber], [checkCreditCardName], and [checkCreditCardExpiryDate] parameters
+  /// determine whether the processor should attempt to extract those pieces of information.
   ProccessCreditCard({
     this.cardNumber = "",
     this.cardName = "",
@@ -27,8 +43,13 @@ class ProccessCreditCard {
     required this.checkCreditCardExpiryDate,
   });
 
+  /// Returns the full expiry date in MM/YYYY format.
   String get fullExpiryDate => '$cardExpirationMonth/$cardExpirationYear';
 
+  /// Returns a [CreditCardModel] if all required information has been extracted.
+  ///
+  /// Whether a piece of information is required is determined by the
+  /// [checkCreditCardNumber], [checkCreditCardName], and [checkCreditCardExpiryDate] parameters.
   CreditCardModel? getCreditCardModel() {
     if ((cardNumber.isNotEmpty || !checkCreditCardNumber) &&
         (cardName.isNotEmpty || !checkCreditCardName) &&
@@ -45,6 +66,9 @@ class ProccessCreditCard {
     return null;
   }
 
+  /// Attempts to extract the expiry date from the given text.
+  ///
+  /// Returns the extracted expiry date in MM/YY format, or null if no date is found.
   String? processDate(String text) {
     if (text.contains(RegExp(r'\/')) &&
         text.length > 4 &&
@@ -72,6 +96,9 @@ class ProccessCreditCard {
     return fullExpiryDate.length > 4 ? fullExpiryDate : null;
   }
 
+  /// Attempts to extract the cardholder name from the given text.
+  ///
+  /// Returns the extracted cardholder name, or null if no name is found.
   String? processName(String text) {
     if (text.contains(RegExp(r'[a-zA-Z]'))) {
       final hasSpace = text.contains(' ');
@@ -96,6 +123,9 @@ class ProccessCreditCard {
     return cardName.isEmpty ? null : cardName;
   }
 
+  /// Attempts to extract the credit card number from the given text.
+  ///
+  /// Returns the extracted credit card number, or null if no number is found.
   String? processNumber(String v) {
     // remove all non-numeric characters from the input text and keep the numbers
     final text = v.replaceAll(RegExp(r'[^0-9]'), '');
@@ -128,17 +158,18 @@ class ProccessCreditCard {
     return cardNumber.isEmpty ? null : cardNumber;
   }
 
-  // Process each text block to identify card information
+  /// Processes the given text to extract credit card information.
+  ///
+  /// Returns a [CreditCardModel] containing the extracted information, or null if
+  /// not all required information is found.
   CreditCardModel? processString(String text) {
     // Check for expiration date
-
     processDate(text);
 
     // Check for card number
     processNumber(text);
 
     // Check for cardholder's name
-
     processName(text);
 
     return getCreditCardModel();

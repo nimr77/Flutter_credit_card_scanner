@@ -15,6 +15,36 @@ import 'credit_card.dart';
 import 'ex.dart';
 import 'process.dart';
 
+/// A widget that displays a live camera preview and scans for credit card information.
+///
+/// This widget uses the device's camera to capture images and performs optical character
+/// recognition (OCR) to extract text from the images. It then analyzes the extracted
+/// text to identify credit card numbers, cardholder names, and expiry dates.
+///
+/// The widget provides callbacks for successful scans and errors, allowing developers
+/// to handle scanned credit card data and display appropriate UI feedback.
+///
+/// To use the widget, simply create an instance of [CameraScannerWidget] and provide
+/// the required callbacks:
+///
+/// ```dart
+/// CameraScannerWidget(
+///   onScan: (context, creditCardModel) {
+///     // Handle the scanned credit card data here
+///   },
+///   loadingHolder: Center(child: CircularProgressIndicator()),
+///   onNoCamera: () {
+///     // Handle the case where no camera is available
+///   },
+/// )
+/// ```
+///
+/// The [onScan] callback is triggered when a credit card is successfully scanned,
+/// providing a [CreditCardModel] object containing the extracted card information.
+///
+/// The [loadingHolder] widget is displayed while the camera is initializing.
+///
+/// The [onNoCamera] callback is triggered if no camera is available on the device.
 class CameraScannerWidget extends StatefulWidget {
   /// Callback function called when a credit card is successfully scanned.
   final void Function(BuildContext, CreditCardModel?) onScan;
@@ -37,8 +67,10 @@ class CameraScannerWidget extends StatefulWidget {
   /// Whether to scan for the card's expiry date. Defaults to true.
   final bool cardExpiryDate;
 
+  /// The color of the overlay that highlights the credit card scanning area.
   final Color? colorOverlay;
 
+  /// The shape of the border surrounding the credit card scanning area.
   final ShapeBorder? shapeBorder;
 
   /// Creates a [CameraScannerWidget].

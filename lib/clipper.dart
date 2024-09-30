@@ -44,10 +44,8 @@ class OverlayShape extends ShapeBorder {
           min(this.cutOutWidth, this.cutOutHeight) / 2 + borderWidth * 2,
       "Border can't be larger than ${min(this.cutOutWidth, this.cutOutHeight) / 2 + borderWidth * 2}",
     );
-    assert(
-        (cutOutWidth == null && cutOutHeight == null) ||
-            (cutOutSize == 0.0 && cutOutWidth != null && cutOutHeight != null),
-        'Use only cutOutWidth and cutOutHeight or only cutOutSize');
+    // assert((cutOutSize == 0.0 && cutOutWidth != null && cutOutHeight != null),
+    //     'Use only cutOutWidth and cutOutHeight or only cutOutSize');
   }
 
   @override

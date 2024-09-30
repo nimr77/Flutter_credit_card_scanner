@@ -105,7 +105,8 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
                       decoration: ShapeDecoration(
                         shape: widget.shapeBorder ??
                             OverlayShape(
-                                cutOutSize: 400,
+                                cutOutHeight: size.height * 0.3,
+                                cutOutWidth: size.width * 0.95,
                                 overlayColor: colorOverlay,
                                 borderRadius: 20),
                       ),

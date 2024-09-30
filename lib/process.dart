@@ -15,6 +15,8 @@ class ProccessCreditCard {
 
   CreditCardModel? creditCardModel;
 
+  final numberTextList = <String>[];
+
   ProccessCreditCard({
     this.cardNumber = "",
     this.cardName = "",
@@ -25,9 +27,25 @@ class ProccessCreditCard {
     required this.checkCreditCardExpiryDate,
   });
 
-  // Process each text block to identify card information
-  CreditCardModel? processString(String text) {
-    // Check for expiration date
+  String get fullExpiryDate => '$cardExpirationMonth/$cardExpirationYear';
+
+  CreditCardModel? getCreditCardModel() {
+    if ((cardNumber.isNotEmpty || !checkCreditCardNumber) &&
+        (cardName.isNotEmpty || !checkCreditCardName) &&
+        ((cardExpirationYear.isNotEmpty && cardExpirationMonth.isNotEmpty) ||
+            !checkCreditCardExpiryDate)) {
+      creditCardModel = CreditCardModel(
+        number: cardNumber,
+        expirationMonth: cardExpirationMonth,
+        expirationYear: cardExpirationYear,
+        holderName: cardName,
+      );
+      return creditCardModel;
+    }
+    return null;
+  }
+
+  String? processDate(String text) {
     if (text.contains(RegExp(r'\/')) &&
         text.length > 4 &&
         text.length < 10 &&
@@ -51,60 +69,78 @@ class ProccessCreditCard {
       }
     }
 
-    // Check for card number
-    if (text.contains(RegExp(r'[0-9]')) &&
-        text.length > 8 &&
-        checkCreditCardNumber) {
+    return fullExpiryDate.length > 4 ? fullExpiryDate : null;
+  }
+
+  String? processName(String text) {
+    if (text.contains(RegExp(r'[a-zA-Z]'))) {
+      final hasSpace = text.contains(' ');
+      final hasNumber = text.contains(RegExp(r'[0-9]'));
+      if (hasSpace) {
+        if (text.contains('\n') && hasNumber) {
+          final lines = text.split('\n');
+
+          if (lines.isNotEmpty &&
+              lines.any((element) =>
+                  element.contains(' ') &&
+                  !element.contains(RegExp(r'[0-9]')))) {
+            cardName = lines.firstWhere((element) =>
+                element.contains(' ') && !element.contains(RegExp(r'[0-9]')));
+          }
+        } else {
+          if (!hasNumber) {
+            final hasEndOfLine = text.contains(RegExp(r'\n'));
+            if (hasEndOfLine) {
+              final lines = text.split('\n');
+
+              if (lines.isNotEmpty &&
+                  lines.any((element) => element.contains(' '))) {
+                cardName = lines.firstWhere((element) => element.contains(' '));
+              }
+            }
+          }
+        }
+      }
+    }
+    return cardName.isEmpty ? null : cardName;
+  }
+
+  String? processNumber(String text) {
+    if (text.contains(RegExp(r'[0-9]')) && checkCreditCardNumber) {
       if (text.contains(' ') &&
           int.tryParse(text.replaceAll(" ", "")) != null &&
           text.split(" ").length == 4 &&
-          text.split(" ").every((element) => element.length == 4)) {
+          text.split(" ").every((element) => element.length == 4) &&
+          text.length > 8) {
         cardNumber = text;
       }
-    }
+      if (text.length == 4 && int.tryParse(text) != null) {
+        numberTextList.add(text);
+        if (numberTextList.length == 4) {
+          cardNumber = numberTextList.join(' ');
 
-    // Check for cardholder's name
-    if (text.contains(RegExp(r'[a-zA-Z]')) && text.contains(' ')) {
-      final hasNumber = text.contains(RegExp(r'[0-9]'));
+          numberTextList.clear();
 
-      if (text.contains('\n') && hasNumber) {
-        final lines = text.split('\n');
-
-        if (lines.isNotEmpty &&
-            lines.any((element) =>
-                element.contains(' ') && !element.contains(RegExp(r'[0-9]')))) {
-          cardName = lines.firstWhere((element) =>
-              element.contains(' ') && !element.contains(RegExp(r'[0-9]')));
-        }
-      } else {
-        if (!hasNumber) {
-          final hasEndOfLine = text.contains(RegExp(r'\n'));
-          if (hasEndOfLine) {
-            final lines = text.split('\n');
-
-            if (lines.isNotEmpty &&
-                lines.any((element) => element.contains(' '))) {
-              cardName = lines.firstWhere((element) => element.contains(' '));
-            }
-          }
-          cardName = text;
+          return cardNumber;
         }
       }
     }
-
-    if ((cardNumber.isNotEmpty || !checkCreditCardNumber) &&
-        (cardName.isNotEmpty || !checkCreditCardName) &&
-        ((cardExpirationYear.isNotEmpty && cardExpirationMonth.isNotEmpty) ||
-            !checkCreditCardExpiryDate)) {
-      creditCardModel = CreditCardModel(
-        number: cardNumber,
-        expirationMonth: cardExpirationMonth,
-        expirationYear: cardExpirationYear,
-        holderName: cardName,
-      );
-      return creditCardModel;
-    }
-
     return null;
+  }
+
+  // Process each text block to identify card information
+  CreditCardModel? processString(String text) {
+    // Check for expiration date
+
+    processDate(text);
+
+    // Check for card number
+    processNumber(text);
+
+    // Check for cardholder's name
+
+    processName(text);
+
+    return getCreditCardModel();
   }
 }

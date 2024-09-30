@@ -77,27 +77,18 @@ class ProccessCreditCard {
       final hasSpace = text.contains(' ');
       final hasNumber = text.contains(RegExp(r'[0-9]'));
       if (hasSpace) {
-        if (text.contains('\n') && hasNumber) {
-          final lines = text.split('\n');
+        final lines = text.split('\n');
+        final validLines =
+            lines.where((line) => line.trim().isNotEmpty && line.contains(' '));
 
-          if (lines.isNotEmpty &&
-              lines.any((element) =>
-                  element.contains(' ') &&
-                  !element.contains(RegExp(r'[0-9]')))) {
-            cardName = lines.firstWhere((element) =>
-                element.contains(' ') && !element.contains(RegExp(r'[0-9]')));
-          }
-        } else {
-          if (!hasNumber) {
-            final hasEndOfLine = text.contains(RegExp(r'\n'));
-            if (hasEndOfLine) {
-              final lines = text.split('\n');
-
-              if (lines.isNotEmpty &&
-                  lines.any((element) => element.contains(' '))) {
-                cardName = lines.firstWhere((element) => element.contains(' '));
-              }
-            }
+        if (validLines.isNotEmpty) {
+          if (hasNumber) {
+            cardName = validLines.firstWhere(
+              (line) => !line.contains(RegExp(r'[0-9]')),
+              orElse: () => '',
+            );
+          } else {
+            cardName = validLines.first;
           }
         }
       }
@@ -105,7 +96,10 @@ class ProccessCreditCard {
     return cardName.isEmpty ? null : cardName;
   }
 
-  String? processNumber(String text) {
+  String? processNumber(String v) {
+    // remove all non-numeric characters from the input text and keep the numbers
+    final text = v.replaceAll(RegExp(r'[^0-9]'), '');
+
     if (text.contains(RegExp(r'[0-9]')) && checkCreditCardNumber) {
       if (text.contains(' ') &&
           int.tryParse(text.replaceAll(" ", "")) != null &&
@@ -114,8 +108,8 @@ class ProccessCreditCard {
           text.length > 8) {
         cardNumber = text;
       }
-      if (text.length == 4 && int.tryParse(text) != null) {
-        numberTextList.add(text);
+      if (v.length == 4 && int.tryParse(v) != null) {
+        numberTextList.add(v);
         if (numberTextList.length == 4) {
           cardNumber = numberTextList.join(' ');
 
@@ -124,8 +118,14 @@ class ProccessCreditCard {
           return cardNumber;
         }
       }
+
+      if (text.length >= 16 && int.tryParse(text) != null) {
+        numberTextList.clear();
+
+        cardNumber = text;
+      }
     }
-    return null;
+    return cardNumber.isEmpty ? null : cardNumber;
   }
 
   // Process each text block to identify card information

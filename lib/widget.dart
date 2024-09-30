@@ -170,17 +170,16 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
     // Call onScan callback if required information is found
     CreditCardModel? creditCardModel;
     for (TextBlock block in readText.blocks) {
-      // for (TextLine line in block.lines) {
-      //   for (TextElement element in line.elements) {
-      //     final text = element.text;
+      for (TextLine line in block.lines) {
+        _process.processNumber(line.text);
 
-      //   }
-      // }
+        _process.processName(line.text);
+        _process.processDate(line.text);
+        // for (TextElement element in line.elements) {
+        //   final text = element.text;
 
-      _process.processNumber(block.text);
-
-      _process.processName(block.text);
-      _process.processDate(block.text);
+        // }
+      }
 
       creditCardModel = _process.getCreditCardModel();
     }

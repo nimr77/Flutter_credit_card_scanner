@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_credit_card_scanner/credit_card.dart';
 import 'package:flutter_credit_card_scanner/credit_card_scanner.dart';
@@ -17,6 +19,7 @@ class _MyAppCreditCardScannerState extends State<MyAppCreditCardScanner> {
       children: [
         CameraScannerWidget(
           onNoCamera: () {
+            log('No camera found, please enable camera');
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                 content: Text('No camera found, please enable camera')));
           },

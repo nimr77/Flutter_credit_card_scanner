@@ -255,21 +255,12 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
     final List<int> bytes =
         image.planes.expand((plane) => plane.bytes).toList();
 
-    final InputImage inputImage = InputImage.fromBytes(
-      bytes: Uint8List.fromList(bytes),
-      metadata: InputImageMetadata(
-        size: Size(image.width.toDouble(), image.height.toDouble()),
-        rotation: imageRotation,
-        format: Platform.isAndroid
-            ? InputImageFormat.nv21
-            : InputImageFormat.yuv420,
-        bytesPerRow: image.planes[0].bytesPerRow,
-      ),
-    );
     try {
       if (Platform.isIOS) {
         final textR = await appleVisionController.processImage(
             apple.RecognizeTextData(
+                automaticallyDetectsLanguage: true,
+                recognitionLevel: apple.RecognitionLevel.accurate,
                 image: Uint8List.fromList(bytes),
                 orientation: imageRotation.appleRotation,
                 imageSize:
@@ -277,24 +268,31 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
 
         if (textR?.isNotEmpty == true) {
           onScanApple(textR!);
-        } else {
-          scanning = false;
         }
       } else {
+        final InputImage inputImage = InputImage.fromBytes(
+          bytes: Uint8List.fromList(bytes),
+          metadata: InputImageMetadata(
+            size: Size(image.width.toDouble(), image.height.toDouble()),
+            rotation: imageRotation,
+            format: Platform.isAndroid
+                ? InputImageFormat.nv21
+                : InputImageFormat.yuv420,
+            bytesPerRow: image.planes[0].bytesPerRow,
+          ),
+        );
         final textR = await mlTextRecognizer.processImage(inputImage);
 
         if (textR.text.isNotEmpty) {
           onScanTextML(textR);
-        } else {
-          scanning = false;
         }
       }
 
-      Future.delayed(const Duration(milliseconds: 500), () {
+      Future.delayed(const Duration(milliseconds: 1000), () {
         scanning = false;
       });
     } catch (e) {
-      scanning = false;
+      // scanning = false;
     }
   }
 
@@ -306,7 +304,7 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
       CameraDescription description) async {
     final CameraController cameraController = CameraController(
       description,
-      ResolutionPreset.max,
+      ResolutionPreset.high,
       enableAudio: false,
       imageFormatGroup:
           Platform.isAndroid ? ImageFormatGroup.nv21 : ImageFormatGroup.yuv420,

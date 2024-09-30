@@ -61,7 +61,6 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
     with WidgetsBindingObserver {
   /// The camera controller used to manage the device's camera.
   CameraController? controller;
-  CameraController? controller2;
 
   /// Text recognizer used to process images and extract text.
   final textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
@@ -72,9 +71,16 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
   /// Flag to prevent multiple simultaneous scans.
   bool scanning = false;
 
+  String cardNumber = '';
+
+  String cardName = '';
+
+  String cardExpirationMonth = '';
+
+  String cardExpirationYear = '';
+
   Color get colorOverlay =>
       widget.colorOverlay ?? Colors.black.withOpacity(0.8);
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -163,11 +169,6 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
   /// This method analyzes the [RecognizedText] to identify the card number,
   /// cardholder's name, and expiration date.
   void onScanText(RecognizedText readText) {
-    String cardNumber = '';
-    String cardName = '';
-    String cardExpirationMonth = '';
-    String cardExpirationYear = '';
-
     // Process each text block to identify card information
     for (TextBlock block in readText.blocks) {
       // Check for expiration date
@@ -195,7 +196,7 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
       }
 
       // Check for card number
-      if (block.text.contains(RegExp(r'[0-9]')) && block.text.length > 10) {
+      if (block.text.contains(RegExp(r'[0-9]')) && block.text.length > 8) {
         final text = block.text;
         if (text.contains(' ') &&
             int.tryParse(text.replaceAll(" ", "")) != null &&
@@ -303,7 +304,7 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
       CameraDescription description) async {
     final CameraController cameraController = CameraController(
       description,
-      ResolutionPreset.high,
+      ResolutionPreset.max,
       enableAudio: false,
       imageFormatGroup:
           Platform.isAndroid ? ImageFormatGroup.nv21 : ImageFormatGroup.yuv420,

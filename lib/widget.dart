@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:apple_vision_recognize_text/apple_vision_recognize_text.dart'
+    as apple;
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +12,7 @@ import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart
 
 import 'clipper.dart';
 import 'credit_card.dart';
+import 'ex.dart';
 import 'process.dart';
 
 class CameraScannerWidget extends StatefulWidget {
@@ -60,11 +63,13 @@ class CameraScannerWidget extends StatefulWidget {
 
 class _CameraScannerWidgetState extends State<CameraScannerWidget>
     with WidgetsBindingObserver {
+  final appleVisionController = apple.AppleVisionRecognizeTextController();
+
   /// The camera controller used to manage the device's camera.
   CameraController? controller;
 
   /// Text recognizer used to process images and extract text.
-  final textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
+  final mlTextRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
 
   /// Notifier to manage the loading state of the camera.
   final valueLoading = ValueNotifier<bool>(true);
@@ -131,7 +136,7 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
       controller!.dispose();
     }
 
-    textRecognizer.close();
+    mlTextRecognizer.close();
   }
 
   @override
@@ -162,11 +167,28 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
     });
   }
 
+  void onScanApple(List<apple.RecognizedText> list) {
+    CreditCardModel? creditCardModel;
+
+    for (var element in list) {
+      for (var element in element.listText) {
+        _process.processNumber(element);
+        _process.processName(element);
+        _process.processDate(element);
+      }
+    }
+    creditCardModel = _process.getCreditCardModel();
+
+    if (creditCardModel != null) {
+      widget.onScan(context, creditCardModel);
+    }
+  }
+
   /// Processes the recognized text to extract credit card information.
   ///
   /// This method analyzes the [RecognizedText] to identify the card number,
   /// cardholder's name, and expiration date.
-  void onScanText(RecognizedText readText) {
+  void onScanTextML(RecognizedText readText) {
     // Call onScan callback if required information is found
     CreditCardModel? creditCardModel;
     for (TextBlock block in readText.blocks) {
@@ -213,10 +235,27 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
       ),
     );
     try {
-      final textR = await textRecognizer.processImage(inputImage);
+      if (Platform.isIOS) {
+        final textR = await appleVisionController.processImage(
+            apple.RecognizeTextData(
+                image: Uint8List.fromList(bytes),
+                orientation: imageRotation.appleRotation,
+                imageSize:
+                    Size(image.width.toDouble(), image.height.toDouble())));
 
-      if (textR.text.isNotEmpty) {
-        onScanText(textR);
+        if (textR?.isNotEmpty == true) {
+          onScanApple(textR!);
+        } else {
+          scanning = false;
+        }
+      } else {
+        final textR = await mlTextRecognizer.processImage(inputImage);
+
+        if (textR.text.isNotEmpty) {
+          onScanTextML(textR);
+        } else {
+          scanning = false;
+        }
       }
 
       Future.delayed(const Duration(milliseconds: 500), () {

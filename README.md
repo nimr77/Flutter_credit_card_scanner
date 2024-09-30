@@ -50,22 +50,22 @@ android {
 
 2. Grant camera access! Modify `android/app/src/main/AndroidManifest.xml`:
 
-
+```xml
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.your_app_name">
     
     <uses-permission android:name="android.permission.CAMERA" />
     
 </manifest>
-
+```
 
 iOS Configuration:
 1. Inform your users! Update `ios/Runner/Info.plist`:
 
-
+```xml
 <key>NSCameraUsageDescription</key>
 <string>This app needs camera access to scan credit cards.</string>
-
+```
 
 2. Set the stage! Modify `ios/Podfile`:
 

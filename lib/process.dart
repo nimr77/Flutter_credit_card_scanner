@@ -62,19 +62,28 @@ class ProccessCreditCard {
   /// Whether a piece of information is required is determined by the
   /// [checkCreditCardNumber], [checkCreditCardName], and [checkCreditCardExpiryDate] parameters.
   CreditCardModel? getCreditCardModel() {
-    if ((cardNumber.isNotEmpty || !checkCreditCardNumber) &&
-        (cardName.isNotEmpty || !checkCreditCardName) &&
-        ((cardExpirationYear.isNotEmpty && cardExpirationMonth.isNotEmpty) ||
-            !checkCreditCardExpiryDate)) {
-      creditCardModel = CreditCardModel(
-        number: cardNumber,
-        expirationMonth: cardExpirationMonth,
-        expirationYear: cardExpirationYear,
-        holderName: cardName,
-      );
-      return creditCardModel;
+    final t = CreditCardModel(
+      number: checkCreditCardNumber ? cardNumber : "",
+      holderName: checkCreditCardName ? cardName : "",
+      expirationMonth: checkCreditCardExpiryDate ? cardExpirationMonth : "",
+      expirationYear: checkCreditCardExpiryDate ? cardExpirationYear : "",
+    );
+
+    if (t.number.isEmpty && checkCreditCardName) {
+      return null;
     }
-    return null;
+
+    if (t.expiryDate.isEmpty && checkCreditCardExpiryDate) {
+      return null;
+    }
+
+    if (t.holderName.isEmpty && checkCreditCardName) {
+      return null;
+    }
+
+    creditCardModel = t;
+
+    return creditCardModel;
   }
 
   /// Attempts to extract the expiry date from the given text.
@@ -111,6 +120,10 @@ class ProccessCreditCard {
   ///
   /// Returns the extracted cardholder name, or null if no name is found.
   String? processName(String text) {
+    if (!checkCreditCardName) {
+      return null;
+    }
+
     if (text.contains(RegExp(r'[a-zA-Z]'))) {
       final hasSpace = text.contains(' ');
       final hasNumber = text.contains(RegExp(r'[0-9]'));

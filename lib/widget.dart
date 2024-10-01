@@ -112,7 +112,7 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
   late final _process = ProccessCreditCard(
       checkCreditCardNumber: widget.cardNumber,
       checkCreditCardName: widget.cardHolder,
-      checkCreditCardExpiryDate: widget.cardHolder);
+      checkCreditCardExpiryDate: widget.cardExpiryDate);
   Color get colorOverlay =>
       widget.colorOverlay ?? Colors.black.withOpacity(0.8);
 

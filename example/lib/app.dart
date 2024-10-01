@@ -18,6 +18,7 @@ class _MyAppCreditCardScannerState extends State<MyAppCreditCardScanner> {
     return Stack(
       children: [
         CameraScannerWidget(
+          cardHolder: false,
           onNoCamera: () {
             log('No camera found, please enable camera');
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(

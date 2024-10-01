@@ -69,7 +69,7 @@ class ProccessCreditCard {
       expirationYear: checkCreditCardExpiryDate ? cardExpirationYear : "",
     );
 
-    if (t.number.isEmpty && checkCreditCardName) {
+    if (t.number.isEmpty && checkCreditCardNumber) {
       return null;
     }
 

@@ -1,5 +1,16 @@
 import 'credit_card.dart';
 
+String removeNonDigitsKeepSpaces(String text) {
+  final buffer = StringBuffer();
+  for (int i = 0; i < text.length; i++) {
+    final char = text[i];
+    if (char.contains(RegExp(r'[0-9 ]'))) {
+      buffer.write(char);
+    }
+  }
+  return buffer.toString();
+}
+
 /// A class that processes strings to extract credit card information.
 class ProccessCreditCard {
   /// The extracted credit card number.
@@ -126,9 +137,9 @@ class ProccessCreditCard {
   /// Attempts to extract the credit card number from the given text.
   ///
   /// Returns the extracted credit card number, or null if no number is found.
-  String? processNumber(String v) {
+  String? processNumber(String v, {bool onlySpaces = true}) {
     // remove all non-numeric characters from the input text and keep the numbers
-    final text = v.replaceAll(RegExp(r'[^0-9]'), '');
+    final text = removeNonDigitsKeepSpaces(v);
 
     if (text.contains(RegExp(r'[0-9]')) && checkCreditCardNumber) {
       if (text.contains(' ') &&
@@ -139,21 +150,24 @@ class ProccessCreditCard {
         cardNumber = text;
         numberTextList.clear();
       }
-      if (v.length == 4 && int.tryParse(v) != null) {
-        numberTextList.add(v);
-        if (numberTextList.length == 4) {
-          cardNumber = numberTextList.join(' ');
 
+      if (!onlySpaces) {
+        if (v.length == 4 && int.tryParse(v) != null) {
+          numberTextList.add(v);
+          if (numberTextList.length == 4) {
+            cardNumber = numberTextList.join(' ');
+
+            numberTextList.clear();
+
+            return cardNumber;
+          }
+        }
+
+        if (text.length >= 16 && int.tryParse(text) != null) {
           numberTextList.clear();
 
-          return cardNumber;
+          cardNumber = text;
         }
-      }
-
-      if (text.length >= 16 && int.tryParse(text) != null) {
-        numberTextList.clear();
-
-        cardNumber = text;
       }
     }
     return cardNumber.isEmpty ? null : cardNumber;

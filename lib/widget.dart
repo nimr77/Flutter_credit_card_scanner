@@ -202,8 +202,8 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
   void onScanApple(List<apple.RecognizedText> list) {
     CreditCardModel? creditCardModel;
 
-    for (var element in list) {
-      for (var element in element.listText) {
+    for (var item in list) {
+      for (var element in item.listText) {
         _process.processNumber(element);
         _process.processName(element);
         _process.processDate(element);

@@ -7,7 +7,7 @@ extension InputImageRotationExt on InputImageRotation {
       case InputImageRotation.rotation0deg:
         return ImageOrientation.up;
       case InputImageRotation.rotation90deg:
-        return ImageOrientation.upMirrored;
+        return ImageOrientation.up;
       case InputImageRotation.rotation180deg:
         return ImageOrientation.down;
       case InputImageRotation.rotation270deg:

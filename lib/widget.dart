@@ -259,7 +259,8 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
       if (Platform.isIOS) {
         final textR = await appleVisionController.processImage(
             apple.RecognizeTextData(
-                automaticallyDetectsLanguage: true,
+                automaticallyDetectsLanguage: false,
+                languages: [const Locale('en', 'US')],
                 recognitionLevel: apple.RecognitionLevel.accurate,
                 image: Uint8List.fromList(bytes),
                 orientation: imageRotation.appleRotation,
@@ -306,8 +307,9 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
       description,
       ResolutionPreset.high,
       enableAudio: false,
-      imageFormatGroup:
-          Platform.isAndroid ? ImageFormatGroup.nv21 : ImageFormatGroup.yuv420,
+      imageFormatGroup: Platform.isAndroid
+          ? ImageFormatGroup.nv21
+          : ImageFormatGroup.bgra8888,
     );
 
     controller = cameraController;

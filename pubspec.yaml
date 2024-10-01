@@ -8,6 +8,7 @@ environment:
       flutter: '>=3.3.0'
 
 dependencies:
+      apple_vision_commons: ^0.0.3
       apple_vision_recognize_text: ^0.0.4
       camera: ^0.11.0+2
       flutter:

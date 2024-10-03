@@ -38,7 +38,7 @@ https://github.com/user-attachments/assets/ff6e818c-a65c-4bff-bb95-cbaef2368a23
 **Platform-Specific Setup:**
 
 Android Configuration:
-1. Ensure your app's has integration with Firebase and Google ML Kit, YOU don't need it in IOS.
+1. Ensure your app has integration with Firebase and Google ML Kit, YOU don't need it in IOS.
 2. Upgrade your Android experience! Update `android/app/build.gradle`:
 
 ```gradle

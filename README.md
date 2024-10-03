@@ -38,17 +38,19 @@ https://github.com/user-attachments/assets/ff6e818c-a65c-4bff-bb95-cbaef2368a23
 **Platform-Specific Setup:**
 
 Android Configuration:
-1. Upgrade your Android experience! Update `android/app/build.gradle`:
+1. Ensure your app's has integration with Firebase and Google ML Kit, YOU don't need it in IOS.
+2. Upgrade your Android experience! Update `android/app/build.gradle`:
 
+```gradle
 android {
     defaultConfig {
         minSdkVersion 21
         // ... other configurations
     }
 }
+```
 
-
-2. Grant camera access! Modify `android/app/src/main/AndroidManifest.xml`:
+3. Grant camera access! Modify `android/app/src/main/AndroidManifest.xml`:
 
 ```xml
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"

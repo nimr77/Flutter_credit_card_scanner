@@ -12,7 +12,7 @@ import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart
 
 import 'clipper.dart';
 import 'credit_card.dart';
-import 'ex.dart';
+import 'helpers.dart';
 import 'process.dart';
 
 /// A widget that displays a live camera preview and scans for credit card information.
@@ -73,6 +73,9 @@ class CameraScannerWidget extends StatefulWidget {
   /// The shape of the border surrounding the credit card scanning area.
   final ShapeBorder? shapeBorder;
 
+  /// this will force validation of the card number means it will apply luhn algorithm to the card number
+  final bool useLuhnValidation;
+
   /// Creates a [CameraScannerWidget].
   ///
   /// The [onScan], [loadingHolder], and [onNoCamera] parameters are required.
@@ -87,6 +90,7 @@ class CameraScannerWidget extends StatefulWidget {
     this.cardExpiryDate = true,
     this.colorOverlay,
     this.shapeBorder,
+    this.useLuhnValidation = true,
   });
 
   @override
@@ -110,6 +114,7 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
   bool scanning = false;
 
   late final _process = ProccessCreditCard(
+      useLuhnValidation: widget.useLuhnValidation,
       checkCreditCardNumber: widget.cardNumber,
       checkCreditCardName: widget.cardHolder,
       checkCreditCardExpiryDate: widget.cardExpiryDate);

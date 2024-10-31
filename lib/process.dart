@@ -1,4 +1,7 @@
+import 'package:credit_card_validator/credit_card_validator.dart';
+
 import 'credit_card.dart';
+import 'helpers.dart';
 
 String removeNonDigitsKeepSpaces(String text) {
   final buffer = StringBuffer();
@@ -40,6 +43,12 @@ class ProccessCreditCard {
   /// A list of 4-digit number strings, used to assemble the card number.
   final numberTextList = <String>[];
 
+  /// use Luhn algorithm to check if the number is valid
+  final bool useLuhnValidation;
+
+  /// The extracted credit card information.
+  final _ccValidator = CreditCardValidator();
+
   /// Creates a new instance of [ProccessCreditCard].
   ///
   /// The [checkCreditCardNumber], [checkCreditCardName], and [checkCreditCardExpiryDate] parameters
@@ -49,6 +58,7 @@ class ProccessCreditCard {
     this.cardName = "",
     this.cardExpirationMonth = "",
     this.cardExpirationYear = "",
+    this.useLuhnValidation = true,
     required this.checkCreditCardNumber,
     required this.checkCreditCardName,
     required this.checkCreditCardExpiryDate,
@@ -101,15 +111,27 @@ class ProccessCreditCard {
         if (cardExpirationMonthT.length == 1) {
           cardExpirationMonthT = '0$cardExpirationMonth';
         }
+        final fullText = '$cardExpirationMonthT/$cardExpirationYearT';
 
-        if (cardExpirationYearT.length == 2 &&
-            cardExpirationMonthT.length == 2) {
-          if (int.tryParse(cardExpirationYearT) != null &&
-              int.tryParse(cardExpirationMonthT) != null) {
-            cardExpirationMonth = cardExpirationMonthT;
-            cardExpirationYear = cardExpirationYearT;
+        final x = _ccValidator.validateExpDate(fullText);
+        if (x.isValid) {
+          final pdate = parseDate(fullText);
+
+          if (pdate.length > 2) {
+            cardExpirationMonth = pdate[0];
+            cardExpirationYear = pdate[1];
           }
+          return fullExpiryDate;
         }
+
+        // if (cardExpirationYearT.length == 2 &&
+        //     cardExpirationMonthT.length == 2) {
+        //   if (int.tryParse(cardExpirationYearT) != null &&
+        //       int.tryParse(cardExpirationMonthT) != null) {
+        //     cardExpirationMonth = cardExpirationMonthT;
+        //     cardExpirationYear = cardExpirationYearT;
+        //   }
+        // }
       }
     }
 
@@ -150,40 +172,54 @@ class ProccessCreditCard {
   /// Attempts to extract the credit card number from the given text.
   ///
   /// Returns the extracted credit card number, or null if no number is found.
-  String? processNumber(String v, {bool onlySpaces = true}) {
-    // remove all non-numeric characters from the input text and keep the numbers
-    final text = removeNonDigitsKeepSpaces(v);
-
-    if (text.contains(RegExp(r'[0-9]')) && checkCreditCardNumber) {
-      if (text.contains(' ') &&
-          int.tryParse(text.replaceAll(" ", "")) != null &&
-          text.split(" ").length == 4 &&
-          text.split(" ").every((element) => element.length == 4) &&
-          text.length > 8) {
-        cardNumber = text;
-        numberTextList.clear();
-      }
-
-      if (!onlySpaces) {
-        if (v.length == 4 && int.tryParse(v) != null) {
-          numberTextList.add(v);
-          if (numberTextList.length == 4) {
-            cardNumber = numberTextList.join(' ');
-
-            numberTextList.clear();
-
-            return cardNumber;
-          }
-        }
-
-        if (text.length >= 16 && int.tryParse(text) != null) {
-          numberTextList.clear();
-
-          cardNumber = text;
-        }
-      }
+  String? processNumber(String number) {
+    if (!checkCreditCardNumber) {
+      return null;
     }
-    return cardNumber.isEmpty ? null : cardNumber;
+
+    final v = _ccValidator.validateCCNum(number,
+        ignoreLuhnValidation: !useLuhnValidation);
+
+    if (v.isValid) {
+      cardNumber = number;
+
+      return cardNumber;
+    }
+    return null;
+
+    // // remove all non-numeric characters from the input text and keep the numbers
+    // final text = removeNonDigitsKeepSpaces(v);
+
+    // if (text.contains(RegExp(r'[0-9]')) && checkCreditCardNumber) {
+    //   if (text.contains(' ') &&
+    //       int.tryParse(text.replaceAll(" ", "")) != null &&
+    //       text.split(" ").length == 4 &&
+    //       text.split(" ").every((element) => element.length == 4) &&
+    //       text.length > 8) {
+    //     cardNumber = text;
+    //     numberTextList.clear();
+    //   }
+
+    //   if (!onlySpaces) {
+    //     if (v.length == 4 && int.tryParse(v) != null) {
+    //       numberTextList.add(v);
+    //       if (numberTextList.length == 4) {
+    //         cardNumber = numberTextList.join(' ');
+
+    //         numberTextList.clear();
+
+    //         return cardNumber;
+    //       }
+    //     }
+
+    //     if (text.length >= 16 && int.tryParse(text) != null) {
+    //       numberTextList.clear();
+
+    //       cardNumber = text;
+    //     }
+    //   }
+    // }
+    // return cardNumber.isEmpty ? null : cardNumber;
   }
 
   /// Processes the given text to extract credit card information.

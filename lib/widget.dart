@@ -76,6 +76,8 @@ class CameraScannerWidget extends StatefulWidget {
   /// this will force validation of the card number means it will apply luhn algorithm to the card number
   final bool useLuhnValidation;
 
+  final bool debug;
+
   /// Creates a [CameraScannerWidget].
   ///
   /// The [onScan], [loadingHolder], and [onNoCamera] parameters are required.
@@ -91,6 +93,7 @@ class CameraScannerWidget extends StatefulWidget {
     this.colorOverlay,
     this.shapeBorder,
     this.useLuhnValidation = true,
+    this.debug = kDebugMode,
   });
 
   @override
@@ -230,6 +233,8 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
     CreditCardModel? creditCardModel;
     for (TextBlock block in readText.blocks) {
       for (TextLine line in block.lines) {
+        if (widget.debug) log(line.text);
+
         _process.processNumber(line.text);
 
         _process.processName(line.text);
@@ -293,12 +298,18 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
           onScanTextML(textR);
         }
       }
+      scanning = false;
 
-      Future.delayed(const Duration(milliseconds: 1000), () {
+      Future.delayed(const Duration(milliseconds: 300), () {
         scanning = false;
       });
     } catch (e) {
+      scanning = false;
+
       // scanning = false;
+      if (kDebugMode) {
+        rethrow;
+      }
     }
   }
 
@@ -310,7 +321,7 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
       CameraDescription description) async {
     final CameraController cameraController = CameraController(
       description,
-      ResolutionPreset.high,
+      Platform.isIOS ? ResolutionPreset.high : ResolutionPreset.high,
       enableAudio: false,
       imageFormatGroup: Platform.isAndroid
           ? ImageFormatGroup.nv21

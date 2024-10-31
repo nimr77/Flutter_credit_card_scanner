@@ -117,7 +117,7 @@ class ProccessCreditCard {
         if (x.isValid) {
           final pdate = parseDate(fullText);
 
-          if (pdate.length > 2) {
+          if (pdate.length >= 2) {
             cardExpirationMonth = pdate[0];
             cardExpirationYear = pdate[1];
           }
@@ -175,6 +175,10 @@ class ProccessCreditCard {
   String? processNumber(String number) {
     if (!checkCreditCardNumber) {
       return null;
+    }
+
+    if (number.contains("L")) {
+      number = number.replaceAll("L", "1");
     }
 
     final v = _ccValidator.validateCCNum(number,

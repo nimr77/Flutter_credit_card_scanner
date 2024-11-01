@@ -18,6 +18,7 @@ class _MyAppCreditCardScannerState extends State<MyAppCreditCardScanner> {
     return Stack(
       children: [
         CameraScannerWidget(
+          useLuhnValidation: true,
           debug: true,
           cardHolder: false,
           cardExpiryDate: true,

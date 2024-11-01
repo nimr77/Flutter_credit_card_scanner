@@ -34,6 +34,7 @@ https://github.com/user-attachments/assets/ff6e818c-a65c-4bff-bb95-cbaef2368a23
 * **`cardNumber`** (optional): Toggle card number scanning (default: true).
 * **`cardHolder`** (optional): Enable/disable cardholder name extraction (default: true).
 * **`cardExpiryDate`** (optional): Control expiry date scanning (default: true).
+* **`useLuhnValidation`** (optional): Enable/disable Luhn validation (default: true).
 
 **Platform-Specific Setup:**
 

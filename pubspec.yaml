@@ -14,7 +14,7 @@ dependencies:
       credit_card_validator: ^2.1.0
       flutter:
         sdk: flutter
-      google_mlkit_text_recognition: ^0.13.1
+      google_mlkit_text_recognition: ^0.14.0
 
 dev_dependencies:
       flutter_test:

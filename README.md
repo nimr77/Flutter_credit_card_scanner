@@ -73,7 +73,7 @@ iOS Configuration:
 2. Set the stage! Modify `ios/Podfile`:
 
 
-platform :ios, '13.0'
+platform :ios, '15.5' // minimum deployment target
 
 
 Don't forget to run `pod install` in the `ios` directory!

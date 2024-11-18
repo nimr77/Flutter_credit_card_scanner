@@ -292,6 +292,7 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
             bytesPerRow: image.planes[0].bytesPerRow,
           ),
         );
+
         final textR = await mlTextRecognizer.processImage(inputImage);
 
         if (textR.text.isNotEmpty) {

@@ -146,7 +146,7 @@ class ProccessCreditCard {
       return null;
     }
 
-    if (text.contains(RegExp(r'[a-zA-Z]'))) {
+    if (text.contains(RegExp(r'[a-zA-Z\.]'))) {
       final hasSpace = text.contains(' ');
       final hasNumber = text.contains(RegExp(r'[0-9]'));
       if (hasSpace) {

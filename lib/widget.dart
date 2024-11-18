@@ -286,9 +286,7 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
           metadata: InputImageMetadata(
             size: Size(image.width.toDouble(), image.height.toDouble()),
             rotation: imageRotation,
-            format: Platform.isAndroid
-                ? InputImageFormat.nv21
-                : InputImageFormat.yuv420,
+            format: InputImageFormat.nv21,
             bytesPerRow: image.planes[0].bytesPerRow,
           ),
         );
@@ -299,11 +297,13 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
           onScanTextML(textR);
         }
       }
+
       scanning = false;
 
-      Future.delayed(const Duration(milliseconds: 300), () {
-        scanning = false;
-      });
+      // Future.delayed(Duration(milliseconds: Platform.isAndroid ? 500 : 300),
+      //     () {
+      //   scanning = false;
+      // });
     } catch (e) {
       scanning = false;
 
@@ -322,7 +322,7 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
       CameraDescription description) async {
     final CameraController cameraController = CameraController(
       description,
-      Platform.isIOS ? ResolutionPreset.high : ResolutionPreset.high,
+      Platform.isIOS ? ResolutionPreset.high : ResolutionPreset.max,
       enableAudio: false,
       imageFormatGroup: Platform.isAndroid
           ? ImageFormatGroup.nv21

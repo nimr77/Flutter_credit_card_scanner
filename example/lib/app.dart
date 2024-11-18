@@ -20,7 +20,7 @@ class _MyAppCreditCardScannerState extends State<MyAppCreditCardScanner> {
         CameraScannerWidget(
           useLuhnValidation: true,
           debug: true,
-          cardHolder: false,
+          cardHolder: true,
           cardExpiryDate: true,
           onNoCamera: () {
             log('No camera found, please enable camera');

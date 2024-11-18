@@ -1,4 +1,5 @@
 import 'package:credit_card_validator/credit_card_validator.dart';
+import 'package:credit_card_validator/validation_results.dart';
 
 import 'credit_card.dart';
 import 'helpers.dart';
@@ -49,6 +50,9 @@ class ProccessCreditCard {
   /// The extracted credit card information.
   final _ccValidator = CreditCardValidator();
 
+  /// The validation results for the card number.
+  CCNumValidationResults? _v;
+
   /// Creates a new instance of [ProccessCreditCard].
   ///
   /// The [checkCreditCardNumber], [checkCreditCardName], and [checkCreditCardExpiryDate] parameters
@@ -90,6 +94,8 @@ class ProccessCreditCard {
     if (t.holderName.isEmpty && checkCreditCardName) {
       return null;
     }
+
+    t.creditCardNumberValidationResults = _v;
 
     creditCardModel = t;
 
@@ -186,6 +192,7 @@ class ProccessCreditCard {
 
     if (v.isValid) {
       cardNumber = number;
+      _v = v;
 
       return cardNumber;
     }

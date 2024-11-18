@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:credit_card_validator/validation_results.dart';
+
 /// Represents a credit card model with essential information.
 ///
 /// This class encapsulates the details of a credit card, including the card number,
@@ -16,6 +18,10 @@ class CreditCardModel {
 
   /// The name of the credit card holder.
   String holderName;
+
+  /// The validation results for the credit card number.
+  /// This property provides information about the validity of the credit card number.
+  CCNumValidationResults? creditCardNumberValidationResults;
 
   /// Constructs a [CreditCardModel] with the required parameters.
   ///

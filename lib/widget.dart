@@ -286,7 +286,7 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
           metadata: InputImageMetadata(
             size: Size(image.width.toDouble(), image.height.toDouble()),
             rotation: imageRotation,
-            format: InputImageFormat.nv21,
+            format: InputImageFormat.yv12,
             bytesPerRow: image.planes[0].bytesPerRow,
           ),
         );

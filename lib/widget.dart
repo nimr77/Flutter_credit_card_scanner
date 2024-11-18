@@ -170,13 +170,13 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-
     if (controller != null) {
       controller!.dispose();
     }
 
     mlTextRecognizer.close();
+
+    super.dispose();
   }
 
   @override

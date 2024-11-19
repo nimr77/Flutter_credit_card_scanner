@@ -1,3 +1,15 @@
+## 0.11.0
+
+
+### Added
+- Debug options
+- Adding credit card validation
+- More config by the developer
+
+### Changed
+- Updated the plugin to use the latest version of the Google ML Kit library
+- Enhanced the proformance
+
 ## 0.10.0
 
 

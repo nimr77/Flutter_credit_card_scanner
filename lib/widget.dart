@@ -78,6 +78,14 @@ class CameraScannerWidget extends StatefulWidget {
 
   final bool debug;
 
+  /// the duration of the next frame
+  ///
+  /// this can be used to slow down the camera scanning and process the image
+  /// so it will scan and wait for the next frame to be processed based on the duration
+  ///
+  /// default is null which means the camera will scan as fast as possible
+  final Duration? durationOfNextFrame;
+
   /// Creates a [CameraScannerWidget].
   ///
   /// The [onScan], [loadingHolder], and [onNoCamera] parameters are required.
@@ -94,6 +102,7 @@ class CameraScannerWidget extends StatefulWidget {
     this.shapeBorder,
     this.useLuhnValidation = true,
     this.debug = kDebugMode,
+    this.durationOfNextFrame,
   });
 
   @override
@@ -298,18 +307,26 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
         }
       }
 
-      scanning = false;
+      // scanning = false;
 
       // Future.delayed(Duration(milliseconds: Platform.isAndroid ? 500 : 300),
       //     () {
       //   scanning = false;
       // });
     } catch (e) {
-      scanning = false;
+      // scanning = false;
 
       // scanning = false;
       if (kDebugMode) {
         rethrow;
+      }
+    } finally {
+      if (widget.durationOfNextFrame != null) {
+        Future.delayed(widget.durationOfNextFrame!, () {
+          scanning = false;
+        });
+      } else {
+        scanning = false;
       }
     }
   }

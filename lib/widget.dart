@@ -86,6 +86,13 @@ class CameraScannerWidget extends StatefulWidget {
   /// default is null which means the camera will scan as fast as possible
   final Duration? durationOfNextFrame;
 
+  /// The resolution preset for the camera. Defaults to [ResolutionPreset.high].
+  ///
+  /// This can be used to set the resolution of the camera to a lower resolution to improve performance.
+  ///
+  /// depands on the targetted platfrom it can be ResolutionPreset.low, ResolutionPreset.medium, ResolutionPreset.high, ResolutionPreset.veryHigh, ResolutionPreset.ultraHigh, ResolutionPreset.max
+  final ResolutionPreset? resolutionPreset;
+
   /// Creates a [CameraScannerWidget].
   ///
   /// The [onScan], [loadingHolder], and [onNoCamera] parameters are required.
@@ -103,6 +110,7 @@ class CameraScannerWidget extends StatefulWidget {
     this.useLuhnValidation = true,
     this.debug = kDebugMode,
     this.durationOfNextFrame,
+    this.resolutionPreset,
   });
 
   @override
@@ -339,7 +347,8 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
       CameraDescription description) async {
     final CameraController cameraController = CameraController(
       description,
-      Platform.isIOS ? ResolutionPreset.high : ResolutionPreset.max,
+      widget.resolutionPreset ??
+          (Platform.isIOS ? ResolutionPreset.high : ResolutionPreset.high),
       enableAudio: false,
       imageFormatGroup: Platform.isAndroid
           ? ImageFormatGroup.nv21

@@ -35,6 +35,9 @@ https://github.com/user-attachments/assets/ff6e818c-a65c-4bff-bb95-cbaef2368a23
 * **`cardHolder`** (optional): Enable/disable cardholder name extraction (default: true).
 * **`cardExpiryDate`** (optional): Control expiry date scanning (default: true).
 * **`useLuhnValidation`** (optional): Enable/disable Luhn validation (default: true).
+* **`durationOfNextFrame`** (optional): The duration of the next frame. This can be used to slow down the camera scanning and process the image so it will scan and wait for the next frame to be processed based on the duration. Default is null which means the camera will scan as fast as possible.
+* **`resolutionPreset`** (optional): The resolution preset for the camera. Defaults to [ResolutionPreset.high]. This can be used to set the resolution of the camera to a lower resolution to improve performance. Depends on the targeted platform it can be ResolutionPreset.low, ResolutionPreset.medium, ResolutionPreset.high, ResolutionPreset.veryHigh, ResolutionPreset.ultraHigh, ResolutionPreset.max.
+
 
 **Platform-Specific Setup:**
 

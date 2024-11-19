@@ -266,6 +266,9 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
     }
 
     if (creditCardModel != null) {
+      if (widget.debug) {
+        log("Scanning catched card: " + creditCardModel.toString());
+      }
       widget.onScan(context, creditCardModel);
     }
   }

@@ -4,7 +4,7 @@ import 'package:credit_card_validator/validation_results.dart';
 import 'credit_card.dart';
 import 'helpers.dart';
 
-String removeNonDigitsKeepSpaces(String text) {
+String removeNonDigits(String text) {
   final buffer = StringBuffer();
   for (int i = 0; i < text.length; i++) {
     final char = text[i];
@@ -113,10 +113,8 @@ class ProccessCreditCard {
       if (text.contains('/')) {
         // remove everything that is not a digit and not /
 
-        String cardExpirationMonthT =
-            removeNonDigitsKeepSpaces(text.split('/').first);
-        String cardExpirationYearT =
-            removeNonDigitsKeepSpaces(text.split('/').last);
+        String cardExpirationMonthT = removeNonDigits(text.split('/').first);
+        String cardExpirationYearT = removeNonDigits(text.split('/').last);
 
         if (cardExpirationMonthT.length == 1) {
           cardExpirationMonthT = '0$cardExpirationMonth';

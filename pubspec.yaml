@@ -1,35 +1,31 @@
 name: flutter_credit_card_scanner
 description: "A Flutter package that utilizes the device camera to scan and extract credit card information. by using Google ML for Android and Apple Vision for iOS."
-version: 0.11.7
+version: 0.11.8
 homepage: https://github.com/nimr77/Flutter_credit_card_scanner
 
 environment:
-      sdk: ^3.5.1
-      flutter: '>=3.3.0'
+  sdk: ^3.5.1
+  flutter: ">=3.3.0"
 
 dependencies:
-      apple_vision_commons: ^0.0.3
-      apple_vision_recognize_text: ^0.0.4
-      camera: ^0.11.0+2
-      credit_card_validator: ^2.1.0
-      google_mlkit_text_recognition: ^0.14.0
+  apple_vision_commons: ^0.0.3
+  apple_vision_recognize_text: ^0.0.4
+  camera: ^0.11.0+2
+  credit_card_validator: ^2.1.0
+  google_mlkit_text_recognition: ^0.14.0
 
-
-
-      flutter:
-        sdk: flutter
-
+  flutter:
+    sdk: flutter
 
 dev_dependencies:
-      flutter_test:
-        sdk: flutter
+  flutter_test:
+    sdk: flutter
 
 flutter:
-      plugin: 
-        platforms:
-          android:
-            package: com.example.flutter_credit_card_scanner
-            pluginClass: CreditCardScannerPlugin
-          ios:
-            pluginClass: CreditCardScannerPlugin
-    
+  plugin:
+    platforms:
+      android:
+        package: com.example.flutter_credit_card_scanner
+        pluginClass: CreditCardScannerPlugin
+      ios:
+        pluginClass: CreditCardScannerPlugin

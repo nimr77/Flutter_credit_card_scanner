@@ -111,12 +111,21 @@ class ProccessCreditCard {
         text.length < 10 &&
         checkCreditCardExpiryDate) {
       if (text.contains('/')) {
-        String cardExpirationMonthT = text.split('/').first;
-        String cardExpirationYearT = text.split('/').last;
+        // remove everything that is not a digit and not /
+
+        String cardExpirationMonthT =
+            removeNonDigitsKeepSpaces(text.split('/').first);
+        String cardExpirationYearT =
+            removeNonDigitsKeepSpaces(text.split('/').last);
 
         if (cardExpirationMonthT.length == 1) {
           cardExpirationMonthT = '0$cardExpirationMonth';
         }
+
+        if (cardExpirationYearT.length >= 4) {
+          cardExpirationYearT = cardExpirationYearT.substring(2);
+        }
+
         final fullText = '$cardExpirationMonthT/$cardExpirationYearT';
 
         final x = _ccValidator.validateExpDate(fullText);

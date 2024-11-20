@@ -8,7 +8,7 @@ String removeNonDigitsKeepSpaces(String text) {
   final buffer = StringBuffer();
   for (int i = 0; i < text.length; i++) {
     final char = text[i];
-    if (char.contains(RegExp(r'[0-9 ]'))) {
+    if (char.contains(RegExp(r'[0-9]'))) {
       buffer.write(char);
     }
   }

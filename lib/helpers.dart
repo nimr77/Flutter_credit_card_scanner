@@ -51,9 +51,6 @@ extension InputImageRotationExt on InputImageRotation {
         return ImageOrientation.down;
       case InputImageRotation.rotation270deg:
         return ImageOrientation.downMirrored;
-
-      default:
-        return ImageOrientation.up;
     }
   }
 }

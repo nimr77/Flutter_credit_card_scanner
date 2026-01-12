@@ -1,3 +1,25 @@
+## Custom Modifications (In The Pocket Fork)
+
+This fork contains customizations made for the payconiq-by-bancontact project.
+
+### Card Number Processing Enhancements
+- **Flexible digit groups**: Supports 1-4 digit groups (not just 4) to handle cards with non-standard lengths like 17-digit Maestro cards
+- **4-5 group combinations**: Handles 16-19 digit cards that may be split across 4 or 5 groups
+- **OCR artifact stripping**: Removes trailing letter sequences (e.g., "5127 8810 3138 2740 N1" becomes "5127 8810 3138 2740")
+- **Letter filtering**: Skips processing text containing letters to filter OCR noise
+
+### iOS Performance Improvements
+- **Background processing**: Apple Vision text recognition runs on background thread for better UI performance
+- **Frame throttling**: 200ms default delay between frames on iOS to prevent UI lag
+
+### Camera & Widget Improvements
+- **Focus delay**: 1500ms initial delay before processing to allow camera to focus
+- **Mounted checks**: Prevents callbacks after widget disposal to avoid crashes
+- **Simplified date parsing**: Uses regex pattern matching instead of validator library, with OCR error correction (O to 0, I/l to 1)
+
+### Original Repository
+This is a fork of [nimr77/Flutter_credit_card_scanner](https://github.com/nimr77/Flutter_credit_card_scanner)
+
 ## CameraScannerWidget
 
 **Description:**

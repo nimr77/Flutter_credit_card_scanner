@@ -196,11 +196,15 @@ class ProccessCreditCard {
     // Fix common OCR error: L misread as 1
     text = text.replaceAll("L", "1");
 
+    // Strip trailing OCR artifacts that start with a letter (e.g., "5127 8810 3138 2740 N1" → "5127 8810 3138 2740")
+    // The regex matches: space(s) + letter + any alphanumeric chars at end of string
+    final cleanedText = text.replaceAll(RegExp(r'\s+[a-zA-Z][a-zA-Z0-9]*$'), '').trim();
+
     // Try direct validation first (single line with full number)
-    final v = _ccValidator.validateCCNum(text, ignoreLuhnValidation: !useLuhnValidation);
+    final v = _ccValidator.validateCCNum(cleanedText, ignoreLuhnValidation: !useLuhnValidation);
 
     if (v.isValid) {
-      cardNumber = text;
+      cardNumber = cleanedText;
       _v = v;
       numberTextList.clear();
       return cardNumber;
@@ -209,6 +213,12 @@ class ProccessCreditCard {
     // Check for digit groups (multi-line card number support)
     // Support groups of 1-4 digits for cards with varying lengths (e.g., 17-digit cards)
     final digitsOnly = removeNonDigits(text);
+
+    // Skip if text contains letters (likely OCR artifact like "N1", not a card number group)
+    if (text.contains(RegExp(r'[a-zA-Z]'))) {
+      return null;
+    }
+
     if (digitsOnly.isNotEmpty && digitsOnly.length <= 4) {
       numberTextList.add(digitsOnly);
 

@@ -185,59 +185,54 @@ class ProccessCreditCard {
   /// Attempts to extract the credit card number from the given text.
   ///
   /// Returns the extracted credit card number, or null if no number is found.
-  String? processNumber(String number) {
+  /// Supports both single-line full card numbers and multi-line card numbers
+  /// where each line contains digit groups (typically 4 digits, but can be 1-4
+  /// for cards with non-standard lengths like 17-digit Maestro cards).
+  String? processNumber(String text) {
     if (!checkCreditCardNumber) {
       return null;
     }
 
-    if (number.contains("L")) {
-      number = number.replaceAll("L", "1");
-    }
+    // Fix common OCR error: L misread as 1
+    text = text.replaceAll("L", "1");
 
-    final v = _ccValidator.validateCCNum(number,
-        ignoreLuhnValidation: !useLuhnValidation);
+    // Try direct validation first (single line with full number)
+    final v = _ccValidator.validateCCNum(text, ignoreLuhnValidation: !useLuhnValidation);
 
     if (v.isValid) {
-      cardNumber = number;
+      cardNumber = text;
       _v = v;
-
+      numberTextList.clear();
       return cardNumber;
     }
+
+    // Check for digit groups (multi-line card number support)
+    // Support groups of 1-4 digits for cards with varying lengths (e.g., 17-digit cards)
+    final digitsOnly = removeNonDigits(text);
+    if (digitsOnly.isNotEmpty && digitsOnly.length <= 4) {
+      numberTextList.add(digitsOnly);
+
+      // Try to form a card number with current groups (supports 4-5 groups for 16-19 digit cards)
+      if (numberTextList.length >= 4 && numberTextList.length <= 5) {
+        final combined = numberTextList.join();
+        final validation = _ccValidator.validateCCNum(combined, ignoreLuhnValidation: !useLuhnValidation);
+
+        if (validation.isValid) {
+          cardNumber = combined;
+          _v = validation;
+          numberTextList.clear();
+          return cardNumber;
+        } else if (numberTextList.length == 5) {
+          // If 5 groups didn't work, remove oldest and keep trying
+          numberTextList.removeAt(0);
+        }
+      }
+    } else if (digitsOnly.length > 4) {
+      // Reset accumulator if we see a line with more than 4 digits
+      numberTextList.clear();
+    }
+
     return null;
-
-    // // remove all non-numeric characters from the input text and keep the numbers
-    // final text = removeNonDigitsKeepSpaces(v);
-
-    // if (text.contains(RegExp(r'[0-9]')) && checkCreditCardNumber) {
-    //   if (text.contains(' ') &&
-    //       int.tryParse(text.replaceAll(" ", "")) != null &&
-    //       text.split(" ").length == 4 &&
-    //       text.split(" ").every((element) => element.length == 4) &&
-    //       text.length > 8) {
-    //     cardNumber = text;
-    //     numberTextList.clear();
-    //   }
-
-    //   if (!onlySpaces) {
-    //     if (v.length == 4 && int.tryParse(v) != null) {
-    //       numberTextList.add(v);
-    //       if (numberTextList.length == 4) {
-    //         cardNumber = numberTextList.join(' ');
-
-    //         numberTextList.clear();
-
-    //         return cardNumber;
-    //       }
-    //     }
-
-    //     if (text.length >= 16 && int.tryParse(text) != null) {
-    //       numberTextList.clear();
-
-    //       cardNumber = text;
-    //     }
-    //   }
-    // }
-    // return cardNumber.isEmpty ? null : cardNumber;
   }
 
   /// Processes the given text to extract credit card information.

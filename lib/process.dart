@@ -2,7 +2,6 @@ import 'package:credit_card_validator/credit_card_validator.dart';
 import 'package:credit_card_validator/validation_results.dart';
 
 import 'credit_card.dart';
-import 'helpers.dart';
 
 String removeNonDigits(String text) {
   final buffer = StringBuffer();
@@ -105,46 +104,26 @@ class ProccessCreditCard {
   /// Attempts to extract the expiry date from the given text.
   ///
   /// Returns the extracted expiry date in MM/YY format, or null if no date is found.
+  /// Uses simple XX/XX pattern matching to handle cases where extra digits
+  /// appear after the expiry date (e.g., "08/30 040").
   String? processDate(String text) {
-    if (text.contains(RegExp(r'\/')) &&
-        text.length > 4 &&
-        text.length < 10 &&
-        checkCreditCardExpiryDate) {
-      if (text.contains('/')) {
-        // remove everything that is not a digit and not /
+    if (!checkCreditCardExpiryDate) return null;
 
-        String cardExpirationMonthT = removeNonDigits(text.split('/').first);
-        String cardExpirationYearT = removeNonDigits(text.split('/').last);
+    // Fix common OCR errors: O misread as 0, I/l misread as 1
+    text = text.replaceAll('O', '0').replaceAll('I', '1').replaceAll('l', '1');
 
-        if (cardExpirationMonthT.length == 1) {
-          cardExpirationMonthT = '0$cardExpirationMonth';
-        }
+    // Match XX/XX pattern where X is a digit
+    final match = RegExp(r'(\d{2})/(\d{2})').firstMatch(text);
+    if (match != null) {
+      final month = match.group(1)!;
+      final year = match.group(2)!;
 
-        if (cardExpirationYearT.length >= 4) {
-          cardExpirationYearT = cardExpirationYearT.substring(2);
-        }
-
-        final fullText = '$cardExpirationMonthT/$cardExpirationYearT';
-
-        final x = _ccValidator.validateExpDate(fullText);
-        if (x.isValid) {
-          final pdate = parseDate(fullText);
-
-          if (pdate.length >= 2) {
-            cardExpirationMonth = pdate[0];
-            cardExpirationYear = pdate[1];
-          }
-          return fullExpiryDate;
-        }
-
-        // if (cardExpirationYearT.length == 2 &&
-        //     cardExpirationMonthT.length == 2) {
-        //   if (int.tryParse(cardExpirationYearT) != null &&
-        //       int.tryParse(cardExpirationMonthT) != null) {
-        //     cardExpirationMonth = cardExpirationMonthT;
-        //     cardExpirationYear = cardExpirationYearT;
-        //   }
-        // }
+      // Validate month is 01-12
+      final monthInt = int.tryParse(month);
+      if (monthInt != null && monthInt >= 1 && monthInt <= 12) {
+        cardExpirationMonth = month;
+        cardExpirationYear = year;
+        return fullExpiryDate;
       }
     }
 

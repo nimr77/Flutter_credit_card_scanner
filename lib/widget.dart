@@ -133,13 +133,19 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
   /// Flag to prevent multiple simultaneous scans.
   bool scanning = false;
 
+  /// Flag to indicate if initial delay has passed and processing can begin.
+  bool _canProcess = false;
+
+  /// Timestamp of when the camera was initialized
+  DateTime? _cameraInitTime;
+
   late final _process = ProccessCreditCard(
       useLuhnValidation: widget.useLuhnValidation,
       checkCreditCardNumber: widget.cardNumber,
       checkCreditCardName: widget.cardHolder,
       checkCreditCardExpiryDate: widget.cardExpiryDate);
   Color get colorOverlay =>
-      widget.colorOverlay ?? Colors.black.withOpacity(0.8);
+      widget.colorOverlay ?? Colors.black.withValues(alpha: 0.8);
 
   @override
   Widget build(BuildContext context) {
@@ -236,7 +242,7 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
     }
     creditCardModel = _process.getCreditCardModel();
 
-    if (creditCardModel != null) {
+    if (creditCardModel != null && mounted) {
       widget.onScan(context, creditCardModel);
     }
   }
@@ -265,7 +271,7 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
       creditCardModel = _process.getCreditCardModel();
     }
 
-    if (creditCardModel != null) {
+    if (creditCardModel != null && mounted) {
       if (widget.debug) {
         log("Scanning catched card: " + creditCardModel.toString());
       }
@@ -274,6 +280,15 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
   }
 
   void process(CameraImage image, CameraDescription description) async {
+    // Skip processing if still in initial delay period (camera focusing)
+    if (!_canProcess) {
+      if (_cameraInitTime != null && DateTime.now().difference(_cameraInitTime!).inMilliseconds > 1500) {
+        _canProcess = true;
+      } else {
+        return;
+      }
+    }
+
     if (scanning) return;
 
     scanning = true;
@@ -333,8 +348,12 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
         rethrow;
       }
     } finally {
-      if (widget.durationOfNextFrame != null) {
-        Future.delayed(widget.durationOfNextFrame!, () {
+      // Apply frame throttling to prevent UI lag
+      // Use provided duration, or default to 200ms on iOS (Apple Vision is heavy)
+      final delay = widget.durationOfNextFrame ?? (Platform.isIOS ? const Duration(milliseconds: 200) : null);
+
+      if (delay != null) {
+        Future.delayed(delay, () {
           scanning = false;
         });
       } else {
@@ -364,6 +383,7 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
     await cameraController.initialize();
 
     valueLoading.value = false;
+    _cameraInitTime = DateTime.now();
 
     await cameraController.startImageStream((CameraImage image) async {
       process(image, description);

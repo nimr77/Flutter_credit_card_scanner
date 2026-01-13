@@ -16,6 +16,7 @@ This fork contains customizations made for the payconiq-by-bancontact project.
 - **Focus delay**: 1500ms initial delay before processing to allow camera to focus
 - **Mounted checks**: Prevents callbacks after widget disposal to avoid crashes
 - **Simplified date parsing**: Uses regex pattern matching instead of validator library, with OCR error correction (O to 0, I/l to 1)
+- **Aspect ratio**: Camera preview now uses full aspect ratio of the screen
 
 ### Original Repository
 This is a fork of [nimr77/Flutter_credit_card_scanner](https://github.com/nimr77/Flutter_credit_card_scanner)

@@ -17,6 +17,7 @@ This fork contains customizations made for the payconiq-by-bancontact project.
 - **Mounted checks**: Prevents callbacks after widget disposal to avoid crashes
 - **Simplified date parsing**: Uses regex pattern matching instead of validator library, with OCR error correction (O to 0, I/l to 1)
 - **Aspect ratio**: Camera preview now uses full aspect ratio of the screen
+- **Overlay border color**: Change overlay border color from red to white
 
 ### Original Repository
 This is a fork of [nimr77/Flutter_credit_card_scanner](https://github.com/nimr77/Flutter_credit_card_scanner)

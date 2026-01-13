@@ -28,7 +28,7 @@ class OverlayShape extends ShapeBorder {
   final double cutOutBottomOffset;
 
   OverlayShape({
-    this.borderColor = Colors.red,
+    this.borderColor = Colors.white,
     this.borderWidth = 4.0,
     this.overlayColor = const Color.fromRGBO(0, 0, 0, 80),
     this.borderRadius = 0,
@@ -37,8 +37,8 @@ class OverlayShape extends ShapeBorder {
     double? cutOutWidth,
     double? cutOutHeight,
     this.cutOutBottomOffset = 0,
-  })  : cutOutWidth = cutOutWidth ?? cutOutSize ?? 250,
-        cutOutHeight = cutOutHeight ?? cutOutSize ?? 250 {
+  }) : cutOutWidth = cutOutWidth ?? cutOutSize ?? 250,
+       cutOutHeight = cutOutHeight ?? cutOutSize ?? 250 {
     assert(
       borderLength <=
           min(this.cutOutWidth, this.cutOutHeight) / 2 + borderWidth * 2,
@@ -68,18 +68,9 @@ class OverlayShape extends ShapeBorder {
     }
 
     return getLeftTopPath(rect)
-      ..lineTo(
-        rect.right,
-        rect.bottom,
-      )
-      ..lineTo(
-        rect.left,
-        rect.bottom,
-      )
-      ..lineTo(
-        rect.left,
-        rect.top,
-      );
+      ..lineTo(rect.right, rect.bottom)
+      ..lineTo(rect.left, rect.bottom)
+      ..lineTo(rect.left, rect.top);
   }
 
   @override
@@ -90,11 +81,12 @@ class OverlayShape extends ShapeBorder {
     final borderOffset = borderWidth / 2;
     final bLength =
         borderLength > min(cutOutHeight, cutOutHeight) / 2 + borderWidth * 2
-            ? borderWidthSize / 2
-            : borderLength;
+        ? borderWidthSize / 2
+        : borderLength;
     final cutWidth = cutOutWidth < width ? cutOutWidth : width - borderOffset;
-    final cutHeight =
-        cutOutHeight < height ? cutOutHeight : height - borderOffset;
+    final cutHeight = cutOutHeight < height
+        ? cutOutHeight
+        : height - borderOffset;
 
     final backgroundPaint = Paint()
       ..color = overlayColor
@@ -122,15 +114,8 @@ class OverlayShape extends ShapeBorder {
     );
 
     canvas
-      ..saveLayer(
-        rect,
-        backgroundPaint,
-      )
-      ..drawRect(
-        rect,
-        backgroundPaint,
-      )
-
+      ..saveLayer(rect, backgroundPaint)
+      ..drawRect(rect, backgroundPaint)
       /// Draw top right corner
       ..drawRRect(
         RRect.fromLTRBAndCorners(
@@ -142,7 +127,6 @@ class OverlayShape extends ShapeBorder {
         ),
         borderPaint,
       )
-
       /// Draw top left corner
       ..drawRRect(
         RRect.fromLTRBAndCorners(
@@ -154,7 +138,6 @@ class OverlayShape extends ShapeBorder {
         ),
         borderPaint,
       )
-
       /// Draw bottom right corner
       ..drawRRect(
         RRect.fromLTRBAndCorners(
@@ -166,7 +149,6 @@ class OverlayShape extends ShapeBorder {
         ),
         borderPaint,
       )
-
       /// Draw bottom left corner
       ..drawRRect(
         RRect.fromLTRBAndCorners(
@@ -179,10 +161,7 @@ class OverlayShape extends ShapeBorder {
         borderPaint,
       )
       ..drawRRect(
-        RRect.fromRectAndRadius(
-          cutOutRect,
-          Radius.circular(borderRadius),
-        ),
+        RRect.fromRectAndRadius(cutOutRect, Radius.circular(borderRadius)),
         boxPaint,
       )
       ..restore();

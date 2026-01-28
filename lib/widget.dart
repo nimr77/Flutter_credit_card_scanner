@@ -313,7 +313,7 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
           apple.RecognizeTextData(
             automaticallyDetectsLanguage: false,
             languages: [const Locale('en', 'US')],
-            recognitionLevel: apple.RecognitionLevel.fast,
+            recognitionLevel: apple.RecognitionLevel.accurate,
             dispatch: apple.Dispatch.background,
             image: Uint8List.fromList(bytes),
             orientation: imageRotation.appleRotation,

@@ -10,7 +10,6 @@ This fork contains customizations made for the payconiq-by-bancontact project.
 
 ### iOS Performance Improvements
 - **Background processing**: Apple Vision text recognition runs on background thread via [forked apple_vision_recognize_text](https://github.com/OdysseyInThePocket/apple_vision) — the upstream plugin runs OCR on the main thread, causing camera preview hangs
-- **Fast recognition level**: Uses `RecognitionLevel.fast` instead of `accurate` to reduce per-frame OCR time from 500ms-1s+ to ~50-100ms
 - **Frame throttling**: 200ms default delay between frames on iOS to prevent UI lag
 
 ### Camera & Widget Improvements

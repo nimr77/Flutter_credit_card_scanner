@@ -1,3 +1,19 @@
+## 0.13.0
+
+### Added
+
+- Swift Package Manager support for iOS (the CocoaPods podspec is kept)
+
+### Changed
+
+- Android text recognition now calls ML Kit natively; ML Kit is no longer compiled into iOS builds
+- Android frames are sent to ML Kit as NV21
+- iOS minimum deployment target is 15.5 in the example app
+
+### Removed
+
+- `google_mlkit_text_recognition` (and transitively `google_mlkit_commons`) Dart dependency
+
 ## 0.12.1
 
 ### Changed

@@ -8,7 +8,6 @@ import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 
 import 'clipper.dart';
 import 'credit_card.dart';
@@ -124,8 +123,8 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
   /// The camera controller used to manage the device's camera.
   CameraController? controller;
 
-  /// Text recognizer used to process images and extract text.
-  final mlTextRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
+  /// Android-only channel to the native ML Kit text recognizer.
+  static const _channel = MethodChannel('flutter_credit_card_scanner');
 
   /// Notifier to manage the loading state of the camera.
   final valueLoading = ValueNotifier<bool>(true);
@@ -194,8 +193,6 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
       controller!.dispose();
     }
 
-    mlTextRecognizer.close();
-
     super.dispose();
   }
 
@@ -249,27 +246,19 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
 
   /// Processes the recognized text to extract credit card information.
   ///
-  /// This method analyzes the [RecognizedText] to identify the card number,
+  /// This method analyzes the recognized [lines] to identify the card number,
   /// cardholder's name, and expiration date.
-  void onScanTextML(RecognizedText readText) {
+  void onScanTextML(List<String> lines) {
     // Call onScan callback if required information is found
-    CreditCardModel? creditCardModel;
-    for (TextBlock block in readText.blocks) {
-      for (TextLine line in block.lines) {
-        if (widget.debug) log(line.text);
+    for (final line in lines) {
+      if (widget.debug) log(line);
 
-        _process.processNumber(line.text);
-
-        _process.processName(line.text);
-        _process.processDate(line.text);
-        // for (TextElement element in line.elements) {
-        //   final text = element.text;
-
-        // }
-      }
-
-      creditCardModel = _process.getCreditCardModel();
+      _process.processNumber(line);
+      _process.processName(line);
+      _process.processDate(line);
     }
+
+    final creditCardModel = _process.getCreditCardModel();
 
     if (creditCardModel != null) {
       if (widget.debug) {
@@ -284,9 +273,7 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
 
     scanning = true;
 
-    final InputImageRotation imageRotation =
-        InputImageRotationValue.fromRawValue(description.sensorOrientation) ??
-        InputImageRotation.rotation0deg;
+    final int rotation = description.sensorOrientation;
 
     final List<int> bytes = image.planes
         .expand((plane) => plane.bytes)
@@ -300,7 +287,7 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
             languages: [const Locale('en', 'US')],
             recognitionLevel: apple.RecognitionLevel.accurate,
             image: Uint8List.fromList(bytes),
-            orientation: imageRotation.appleRotation,
+            orientation: appleOrientationFromRotation(rotation),
             imageSize: Size(image.width.toDouble(), image.height.toDouble()),
           ),
         );
@@ -309,20 +296,18 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
           onScanApple(textR!);
         }
       } else {
-        final InputImage inputImage = InputImage.fromBytes(
-          bytes: Uint8List.fromList(bytes),
-          metadata: InputImageMetadata(
-            size: Size(image.width.toDouble(), image.height.toDouble()),
-            rotation: imageRotation,
-            format: InputImageFormat.yv12,
-            bytesPerRow: image.planes[0].bytesPerRow,
-          ),
+        final lines = await _channel.invokeListMethod<String>(
+          'recognizeText',
+          {
+            'bytes': Uint8List.fromList(bytes),
+            'width': image.width,
+            'height': image.height,
+            'rotation': rotation,
+          },
         );
 
-        final textR = await mlTextRecognizer.processImage(inputImage);
-
-        if (textR.text.isNotEmpty) {
-          onScanTextML(textR);
+        if (lines != null && lines.isNotEmpty) {
+          onScanTextML(lines);
         }
       }
 

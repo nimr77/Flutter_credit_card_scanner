@@ -15,6 +15,18 @@ final RegExp expDateFormat = RegExp(r'^((0?([1-9]))|1([0-2]))\/(\d{2,4})$');
 /// Recognizes all whitespace characters
 final RegExp whiteSpaceRegex = RegExp(r'-|\s+\b|\b\s');
 
+/// Maps a camera sensor orientation in degrees to an Apple Vision orientation.
+ImageOrientation appleOrientationFromRotation(int degrees) {
+  switch (degrees) {
+    case 180:
+      return ImageOrientation.down;
+    case 270:
+      return ImageOrientation.downMirrored;
+    default:
+      return ImageOrientation.up;
+  }
+}
+
 /// Parses the string form of the expiration date and returns the month and year
 /// as a `List<String>`
 ///
@@ -37,16 +49,4 @@ List<String> parseDate(String expDateStr) {
   }
 
   return match[0]!.split('/');
-}
-
-/// Maps a camera sensor orientation in degrees to an Apple Vision orientation.
-ImageOrientation appleOrientationFromRotation(int degrees) {
-  switch (degrees) {
-    case 180:
-      return ImageOrientation.down;
-    case 270:
-      return ImageOrientation.downMirrored;
-    default:
-      return ImageOrientation.up;
-  }
 }

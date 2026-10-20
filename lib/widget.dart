@@ -118,13 +118,13 @@ class CameraScannerWidget extends StatefulWidget {
 
 class _CameraScannerWidgetState extends State<CameraScannerWidget>
     with WidgetsBindingObserver {
+  /// Android-only channel to the native ML Kit text recognizer.
+  static const _channel = MethodChannel('flutter_credit_card_scanner');
+
   final appleVisionController = apple.AppleVisionRecognizeTextController();
 
   /// The camera controller used to manage the device's camera.
   CameraController? controller;
-
-  /// Android-only channel to the native ML Kit text recognizer.
-  static const _channel = MethodChannel('flutter_credit_card_scanner');
 
   /// Notifier to manage the loading state of the camera.
   final valueLoading = ValueNotifier<bool>(true);
@@ -296,15 +296,12 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget>
           onScanApple(textR!);
         }
       } else {
-        final lines = await _channel.invokeListMethod<String>(
-          'recognizeText',
-          {
-            'bytes': Uint8List.fromList(bytes),
-            'width': image.width,
-            'height': image.height,
-            'rotation': rotation,
-          },
-        );
+        final lines = await _channel.invokeListMethod<String>('recognizeText', {
+          'bytes': Uint8List.fromList(bytes),
+          'width': image.width,
+          'height': image.height,
+          'rotation': rotation,
+        });
 
         if (lines != null && lines.isNotEmpty) {
           onScanTextML(lines);

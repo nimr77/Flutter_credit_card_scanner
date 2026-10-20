@@ -1,5 +1,10 @@
 # include: package:flutter_lints/flutter.yaml
 
+analyzer:
+  exclude:
+    - build/**
+    - android/**
+    - ios/**
 linter:
   rules:
     - always_declare_return_types

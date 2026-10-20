@@ -1,3 +1,12 @@
+## 0.12.1
+
+### Changed
+- Updated `apple_vision_recognize_text` to ^0.1.0
+- Updated `camera` to ^0.12.1
+- Updated `google_mlkit_text_recognition` to ^0.17.1
+- Updated example app dependencies (`firebase_core` ^5.0.0, `cupertino_icons` ^2.0.0)
+- Refreshed transitive dependencies
+
 ## 0.11.0
 
 
